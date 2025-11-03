@@ -5,19 +5,22 @@ const withBundleAnalyzer = require("@next/bundle-analyzer")({
 });
 
 const mkCsp = (enforce = true) => {
-  // Start tight but compatible with Next (allow 'unsafe-inline' for styles only)
+  // Development needs 'unsafe-inline' for Next.js dev scripts
+  const isDevelopment = process.env.NODE_ENV === "development";
+
   const directives = [
     "default-src 'self'",
     "base-uri 'self'",
     "frame-ancestors 'none'",
     "img-src 'self' data: blob:",
-    "font-src 'self' data:",
+    "font-src 'self' data: https://cdnjs.cloudflare.com https://r2cdn.perplexity.ai https://fonts.googleapis.com https://fonts.gstatic.com https://ka-f.fontawesome.com", // Allow external fonts
     "style-src 'self' 'unsafe-inline'",
-    "script-src 'self'",                   // no inline/eval
-    "connect-src 'self' https:",           // allow APIs/wss if needed: wss:
+    `script-src 'self' ${isDevelopment ? "'unsafe-inline' 'unsafe-eval'" : ""}`, // Allow inline in dev only
+    "connect-src 'self' https: wss:",           // Allow websockets
     "object-src 'none'",
     "upgrade-insecure-requests"
-  ];
+  ].filter(directive => directive && directive.trim()); // Remove empty strings
+
   return {
     key: enforce ? "Content-Security-Policy" : "Content-Security-Policy-Report-Only",
     value: directives.join("; ")
@@ -36,6 +39,9 @@ const securityHeaders = [
 
 const base: NextConfig = {
   reactStrictMode: true,
+  turbopack: {
+    root: __dirname
+  },
   async headers() {
     return [
       { source: "/:path*", headers: securityHeaders }

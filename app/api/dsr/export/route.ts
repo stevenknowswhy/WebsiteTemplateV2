@@ -6,13 +6,33 @@ import { auditLog } from "@/lib/audit";
 
 /**
  * Export user's data as JSON snapshot.
- * Auth expectation: You have a session/user id available via your auth layer.
- * Replace `getUserId` with your real implementation.
+ * Implements proper Supabase authentication for GDPR/CCPA compliance.
  */
 async function getUserId(req: Request): Promise<string | null> {
-  // TODO: integrate with your auth provider (cookies, headers, supabase auth, next-auth, clerk, etc.)
-  const id = req.headers.get("x-user-id"); // placeholder for now
-  return id;
+  try {
+    // Extract authorization token from request
+    const authHeader = req.headers.get('authorization');
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return null;
+    }
+
+    const token = authHeader.substring(7);
+
+    // Verify the JWT token using Supabase admin client
+    const { data: { user }, error } = await supabaseAdmin.auth.getUser(token);
+
+    if (error || !user) {
+      return null;
+    }
+
+    // Log the authentication attempt for audit trail
+    console.log(`DSR export authenticated for user: ${user.id}`);
+
+    return user.id;
+  } catch (error) {
+    console.error('DSR authentication error:', error);
+    return null;
+  }
 }
 
 export const GET = withApiHandler(async (req, requestId) => {
