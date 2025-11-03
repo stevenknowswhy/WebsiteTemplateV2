@@ -1,0 +1,22 @@
+name: A11y CI
+on:
+  pull_request:
+  push:
+    branches: [ main ]
+
+jobs:
+  a11y:
+    runs-on: ubuntu-latest
+    env:
+      NEXT_TELEMETRY_DISABLED: "1"
+      UPSTASH_REDIS_REST_URL: ${{ secrets.UPSTASH_REDIS_REST_URL }}
+      UPSTASH_REDIS_REST_TOKEN: ${{ secrets.UPSTASH_REDIS_REST_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with: { version: 9 }
+      - run: pnpm i --frozen-lockfile
+      - run: pnpm build
+      - run: pnpm exec playwright install --with-deps
+      - run: pnpm start & sleep 6
+      - run: pnpm axe:ci
