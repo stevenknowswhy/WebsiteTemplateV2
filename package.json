@@ -14,6 +14,8 @@
     "test:e2e:smoke": "playwright test --project=chromium --grep @smoke",
     "test:e2e:ci": "playwright test",
     "axe:ci": "playwright test --grep @a11y",
+    "analyze": "ANALYZE=true pnpm build",
+    "analyze:view": "ANALYZE=true NEXT_PUBLIC_DISABLE_SOURCEMAP_WARN=1 pnpm build",
     "lhci": "lhci autorun",
     "supabase:start": "supabase start",
     "supabase:stop": "supabase stop",
@@ -23,11 +25,13 @@
     "remediation:status": "node scripts/check-remediation-status.ts"
   },
   "dependencies": {
+    "@opentelemetry/api": "^1.9.0",
     "@radix-ui/react-dialog": "^1.1.15",
     "@radix-ui/react-dropdown-menu": "^2.1.16",
     "@radix-ui/react-label": "^2.1.7",
     "@radix-ui/react-select": "^2.2.6",
     "@radix-ui/react-slot": "^1.2.3",
+    "@sentry/nextjs": "^10.22.0",
     "@stripe/stripe-js": "^8.1.0",
     "@supabase/ssr": "^0.7.0",
     "@supabase/supabase-js": "^2.76.1",
@@ -50,6 +54,7 @@
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.11.0",
+    "@next/bundle-analyzer": "^16.0.1",
     "@playwright/test": "^1.48.0",
     "@tailwindcss/postcss": "^4.1.16",
     "@testing-library/jest-dom": "^6.4.2",

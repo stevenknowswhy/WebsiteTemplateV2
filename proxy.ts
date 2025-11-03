@@ -21,11 +21,11 @@ export async function proxy(req: NextRequest) {
     return NextResponse.next();
   }
   if ([...PUBLIC_PATHS].some(p => pathname === p || pathname.startsWith(p + "/"))) {
-    return withSecurityHeaders(await updateSession(req));
+    return ensureRequestId(req, withSecurityHeaders(await updateSession(req)));
   }
 
   // Handle authentication via Supabase
-  return withSecurityHeaders(await updateSession(req));
+  return ensureRequestId(req, withSecurityHeaders(await updateSession(req)));
 }
 
 export const config = {
@@ -33,6 +33,12 @@ export const config = {
 };
 
 // Minimal, safe-by-default headers (CSP in Report-Only for now)
+function ensureRequestId(req: NextRequest, res: NextResponse) {
+  const rid = req.headers.get("x-request-id") || crypto.randomUUID();
+  res.headers.set("x-request-id", rid);
+  return res;
+}
+
 function withSecurityHeaders(res: NextResponse) {
   res.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
   res.headers.set("X-Content-Type-Options", "nosniff");

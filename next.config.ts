@@ -1,5 +1,9 @@
 import type { NextConfig } from "next";
 
+const withBundleAnalyzer = require("@next/bundle-analyzer")({
+  enabled: process.env.ANALYZE === "true",
+});
+
 const mkCsp = (enforce = true) => {
   // Start tight but compatible with Next (allow 'unsafe-inline' for styles only)
   const directives = [
@@ -30,7 +34,7 @@ const securityHeaders = [
   { key: "Strict-Transport-Security", value: "max-age=31536000; includeSubDomains; preload" }
 ];
 
-const nextConfig: NextConfig = {
+const base: NextConfig = {
   reactStrictMode: true,
   async headers() {
     return [
@@ -39,4 +43,4 @@ const nextConfig: NextConfig = {
   }
 };
 
-export default nextConfig;
+module.exports = withBundleAnalyzer(base);
