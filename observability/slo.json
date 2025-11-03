@@ -1,0 +1,42 @@
+{
+  "$schema": "https://example.com/slo.schema.json",
+  "service": "templateappv2",
+  "env": "production",
+  "objectives": [
+    {
+      "id": "api-availability",
+      "description": "GET /api/ready availability",
+      "indicator": { "type": "http_status", "route": "/api/ready", "method": "GET", "success_codes": [200] },
+      "target": { "objective": 99.9, "windowDays": 30 },
+      "alert": { "policy": "page", "threshold": 99.5, "forMinutes": 30 }
+    },
+    {
+      "id": "api-latency-get",
+      "description": "p95 latency GET /api/**",
+      "indicator": { "type": "latency_p95", "route": "/api/*", "method": "GET" },
+      "target": { "objectiveMs": 800, "windowDays": 7 },
+      "alert": { "policy": "notify", "thresholdMs": 1600, "forMinutes": 15 }
+    },
+    {
+      "id": "api-errors-5xx",
+      "description": "5xx error rate",
+      "indicator": { "type": "error_rate", "statusClass": "5xx" },
+      "target": { "objectivePct": 0.5, "windowDays": 7 },
+      "alert": { "policy": "page", "thresholdPct": 1.0, "forMinutes": 10 }
+    },
+    {
+      "id": "dsr-success",
+      "description": "DSR endpoints success",
+      "indicator": { "type": "http_status", "route": "/api/dsr/*", "method": "*" , "success_codes": [200, 202] },
+      "target": { "objective": 99.0, "windowDays": 30 },
+      "alert": { "policy": "page", "threshold": 95.0, "forMinutes": 60 }
+    },
+    {
+      "id": "client-inp",
+      "description": "Client INP p75",
+      "indicator": { "type": "web_vitals_inp_p75" },
+      "target": { "objectiveMs": 200, "windowDays": 7 },
+      "alert": { "policy": "notify", "thresholdMs": 300, "forMinutes": 60 }
+    }
+  ]
+}

@@ -3,6 +3,7 @@ import { getRequestId } from "@/lib/requestId";
 import { logError } from "@/lib/logger";
 import { AppError, classifyUnknown } from "@/lib/errors";
 import * as Sentry from "@sentry/nextjs";
+import { makeTraceparent, getOtelTraceIds } from "@/lib/trace";
 
 type Handler = (req: Request, requestId: string) => Promise<Response> | Response;
 
@@ -13,6 +14,8 @@ export function withApiHandler(handler: Handler) {
     try {
       const res = await handler(req, requestId);
       if (!res.headers.get("cache-control")) res.headers.set("cache-control", "no-store");
+      const { traceId, spanId } = getOtelTraceIds();
+      if (traceId && spanId) res.headers.set("traceparent", makeTraceparent(traceId, spanId)!);
       res.headers.set("x-request-id", requestId);
       return res;
     } catch (raw: any) {
@@ -31,6 +34,8 @@ export function withApiHandler(handler: Handler) {
       });
 
       const res = NextResponse.json(body, { status });
+      const ids = getOtelTraceIds();
+      if (ids.traceId && ids.spanId) res.headers.set("traceparent", makeTraceparent(ids.traceId, ids.spanId)!);
       res.headers.set("x-request-id", requestId);
       return res;
     }
