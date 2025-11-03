@@ -1,0 +1,148 @@
+name: Remediation Task
+description: Track a specific remediation task from codebase review
+title: "[FINDING-ID] - Issue Title"
+labels: ["triage"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Remediation Task
+
+        This issue tracks a specific finding from TemplateAppV2 codebase review.
+
+  - type: input
+    id: finding-id
+    attributes:
+      label: Finding ID
+      description: Unique identifier from Findings.md (e.g., SEC-001)
+      placeholder: "SEC-001"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      description: Impact level of this issue
+      options:
+        - P0 - Critical
+        - P1 - High
+        - P2 - Medium
+        - P3 - Low
+    validations:
+      required: true
+
+  - type: dropdown
+    id: domain
+    attributes:
+      label: Domain
+      description: Technical domain of issue
+      options:
+        - security
+        - privacy
+        - accessibility
+        - architecture
+        - performance
+        - dependencies
+        - dead-code
+        - ux-ui
+        - testing
+        - deployment
+        - documentation
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Issue Description
+      description: Detailed description of issue
+      placeholder: |
+        ## Problem
+        [Describe what issue is and why it matters]
+
+        ## Location
+        [File paths and line numbers]
+
+        ## Evidence
+        [Code snippets or screenshots showing issue]
+
+        ## Impact
+        [What business/technical impact this has]
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed Solution
+      description: How to fix this issue
+      placeholder: |
+        ## Implementation Plan
+        [Step-by-step approach to fixing issue]
+
+        ## Files to Modify
+        [List of files that need changes]
+
+        ## Testing Approach
+        [How to verify fix works]
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: Acceptance Criteria
+      description: Definition of Done for this issue
+      placeholder: |
+        - [ ] Fix implemented according to solution
+        - [ ] Tests pass (if applicable)
+        - [ ] Code review completed
+        - [ ] Security/privacy/a11y checks passed
+        - [ ] Documentation updated (if applicable)
+        - [ ] Manual verification completed
+    validations:
+      required: true
+
+  - type: input
+    id: estimated-hours
+    attributes:
+      label: Estimated Hours
+      description: Time estimate for completing this task
+      placeholder: "8"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: phase
+    attributes:
+      label: Phase
+      description: Which remediation phase this belongs to
+      options:
+        - Phase 1 (0-72 hours) - Emergency Fixes
+        - Phase 2 (1-2 weeks) - Critical Foundation
+        - Phase 3 (2-4 weeks) - Core Improvements
+        - Phase 4 (1-3 months) - Enhancement
+    validations:
+      required: true
+
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: Dependencies
+      description: Any blocking issues or prerequisites
+      placeholder: |
+        - Blocking: ISSUE-123
+        - Prerequisites: None
+        - Related: ISSUE-456
+
+  - type: textarea
+    id: verification-steps
+    attributes:
+      label: Verification Steps
+      description: How to test fix
+      placeholder: |
+        1. [First test step]
+        2. [Second test step]
+        3. [Expected result]

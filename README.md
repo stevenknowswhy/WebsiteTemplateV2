@@ -1,6 +1,6 @@
-# Next.js SaaS Boilerplate with Claude Code
+# TemplateAppV2 - Next.js Website & SaaS Template
 
-A production-ready SaaS boilerplate with Next.js, Supabase authentication, and Stripe subscription payments. **Featuring fully automated setup via Claude Code** - go from zero to running SaaS in minutes!
+A modern, production-ready template with Next.js that works as both a **general-purpose website** and **SaaS application starter**. **Featuring fully automated setup via Claude Code** - go from zero to running in minutes!
 
 ## 🤖 Built for Claude Code
 
@@ -30,8 +30,11 @@ Need help getting started? Want to learn how to build SaaS apps with AI? Join th
 - **Next.js 16** - React framework with App Router
 - **TypeScript** - Type-safe development
 - **Tailwind CSS** - Utility-first styling
-- **Supabase** - Authentication and database
-- **Stripe** - Payment processing
+- **Supabase** - Authentication and database (optional)
+- **Stripe** - Payment processing (optional)
+- **shadcn/ui** - Modern React components
+- **next-themes** - Dark mode support
+- **Feature Flags** - Progressive enhancement
 
 ## Project Structure
 
@@ -480,18 +483,29 @@ const session = await stripe.checkout.sessions.create({...});
 
 ## Features Included
 
-- Magic link authentication (passwordless)
-- Protected routes with middleware
-- User profiles with membership tiers
-- Subscription management (Free, Pro, Enterprise)
-- Stripe Checkout integration
-- Stripe Customer Portal for subscription management
-- Webhook handling for subscription updates
-- Automatic tier upgrades/downgrades
-- Server-side rendering with Next.js App Router
-- TypeScript for type safety
-- Tailwind CSS for styling
-- Dark mode support
+### Website Features
+- **5 Complete Pages**: Home, Services, Pricing, About, Contact
+- **Responsive Design**: Mobile-first with Tailwind CSS
+- **Dark Mode**: System-aware theme switching
+- **SEO Optimized**: Meta tags, Open Graph, Twitter Cards
+- **Accessibility**: ARIA labels, skip links, semantic HTML
+- **Contact Form**: Client + server ready with validation
+
+### SaaS Features (Optional)
+- **Feature Flags**: Enable/disable auth, payments, analytics
+- **Magic Link Authentication**: Passwordless login
+- **Membership Tiers**: Free, Pro, Enterprise plans
+- **Stripe Integration**: Checkout + Customer Portal
+- **Webhook Handling**: Real-time subscription updates
+- **Protected Routes**: Auth middleware
+- **Database Integration**: Supabase or custom
+
+### Development Features
+- **TypeScript**: Full type safety
+- **shadcn/ui**: Modern React components
+- **Component Library**: Reusable Hero, Section, ServiceCard
+- **Centralized Config**: Site-wide branding and metadata
+- **Progressive Enhancement**: Works with/without auth/payments
 
 ## Environment Variables Reference
 
@@ -618,9 +632,45 @@ free: {
 - [Stripe Documentation](https://stripe.com/docs)
 - [Tailwind CSS Documentation](https://tailwindcss.com/docs)
 
+## Template Upgrade
+
+This project has been upgraded from a pure SaaS boilerplate to a **modular website template** that can serve as both:
+
+1. **General-purpose website** - Works out of the box with 5 complete pages
+2. **SaaS application starter** - Enable auth/payments when needed
+
+### Key Improvements
+- **Component Architecture**: Reusable Hero, Section, ServiceCard components
+- **Centralized Configuration**: `siteConfig.ts` for branding, `plans.ts` for pricing
+- **Feature Flags**: Progressive enhancement - works with/without integrations
+- **SEO Metadata**: Comprehensive meta tags for all pages
+- **Accessibility**: ARIA labels, skip links, semantic HTML
+- **Dark Mode**: System-aware theme switching
+- **Mobile-First**: Responsive design for all screen sizes
+
+## Usage Options
+
+### Option 1: Website Only (Default)
+```bash
+npm run dev
+```
+Perfect for company websites, portfolios, landing pages.
+
+### Option 2: SaaS Application
+1. Set `NEXT_PUBLIC_ENABLE_AUTH=true`
+2. Set `NEXT_PUBLIC_ENABLE_STRIPE=true`
+3. Configure Supabase and Stripe credentials
+4. Ready for subscription-based SaaS
+
+### Option 3: Hybrid Approach
+- Use website features for marketing pages
+- Enable auth/payments only when needed
+- Mix and match based on your requirements
+
 ## Notes
 
 - The `.env` file is preserved from the original setup
 - The `.env.local` file uses Next.js naming conventions
 - Both Supabase clients (legacy and SSR) are available
 - Middleware automatically refreshes auth sessions
+- All components work standalone or integrated
