@@ -1,4 +1,9 @@
 export async function register() {
-  // Put any OpenTelemetry global setup here if you later add exporters.
-  // For now, we rely on Sentry's Next.js SDK to auto-instrument fetch/next/router/etc.
+  // Start OTEL only if endpoint configured
+  if (process.env.OTEL_EXPORTER_OTLP_ENDPOINT) {
+    const { startOtelNode } = await import("./otel.server");
+    startOtelNode();
+  }
+  // If you also want browser traces -> opt-in:
+  // if (typeof window !== "undefined") (await import("./otel.client")).startOtelWeb();
 }
