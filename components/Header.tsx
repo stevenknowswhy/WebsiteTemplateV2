@@ -15,6 +15,7 @@ import { site, type NavItem } from '@/lib/siteConfig';
 import { isFeatureEnabled } from '@/lib/featureFlags';
 import { FeatureGuard } from '@/components/FeatureGuard';
 import { ThemeToggle } from '@/components/theme-toggle';
+import { NavDropdown } from '@/components/NavDropdown';
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
@@ -32,15 +33,27 @@ export default function Header() {
         {/* Desktop Navigation */}
         <div className="mr-4 hidden md:flex">
           <nav className="flex items-center space-x-6 text-sm font-medium">
-            {site.nav.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="transition-colors hover:text-foreground/80 text-foreground/60"
-              >
-                {item.label}
-              </Link>
-            ))}
+            {site.nav.map((item) => {
+              if ('dropdown' in item && item.dropdown) {
+                return (
+                  <NavDropdown
+                    key={item.label}
+                    trigger={<span>{item.label}</span>}
+                    items={item.dropdown}
+                  />
+                )
+              }
+
+              return (
+                <Link
+                  key={item.label}
+                  href={'href' in item ? item.href : '#'}
+                  className="transition-colors hover:text-foreground/80 text-foreground/60"
+                >
+                  {item.label}
+                </Link>
+              )
+            })}
           </nav>
         </div>
 
@@ -84,16 +97,38 @@ export default function Header() {
                 </SheetHeader>
                 <div className="my-4 h-[calc(100vh-8rem)] pb-10 pl-6">
                   <div className="flex flex-col space-y-3">
-                    {site.nav.map((item) => (
-                      <Link
-                        key={item.href}
-                        href={item.href}
-                        onClick={() => setIsOpen(false)}
-                        className="text-foreground/60 transition-colors hover:text-foreground"
-                      >
-                        {item.label}
-                      </Link>
-                    ))}
+                    {site.nav.map((item) => {
+                      if ('dropdown' in item && item.dropdown) {
+                        return (
+                          <div key={item.label} className="space-y-2">
+                            <span className="text-foreground/80 font-medium">{item.label}</span>
+                            <div className="ml-4 space-y-2">
+                              {item.dropdown.map((dropdownItem) => (
+                                <Link
+                                  key={dropdownItem.href}
+                                  href={dropdownItem.href}
+                                  onClick={() => setIsOpen(false)}
+                                  className="text-foreground/60 transition-colors hover:text-foreground block text-sm"
+                                >
+                                  {dropdownItem.label}
+                                </Link>
+                              ))}
+                            </div>
+                          </div>
+                        )
+                      }
+
+                      return (
+                        <Link
+                          key={item.label}
+                          href={'href' in item ? item.href : '#'}
+                          onClick={() => setIsOpen(false)}
+                          className="text-foreground/60 transition-colors hover:text-foreground"
+                        >
+                          {item.label}
+                        </Link>
+                      )
+                    })}
                   </div>
                 </div>
               </SheetContent>

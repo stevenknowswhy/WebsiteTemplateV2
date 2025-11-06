@@ -1,21 +1,22 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { useTheme } from 'next-themes';
+import { vi } from 'vitest';
 
 // Mock the useTheme hook
-jest.mock('next-themes', () => ({
-  useTheme: jest.fn(),
+vi.mock('next-themes', () => ({
+  useTheme: vi.fn(),
 }));
 
 describe('ThemeToggle', () => {
-  const mockSetTheme = jest.fn();
+  const mockSetTheme = vi.fn();
 
   beforeEach(() => {
     // Clear all mock calls before each test
-    jest.clearAllMocks();
+    vi.clearAllMocks();
 
     // Mock the useTheme hook to return controlled values
-    (useTheme as jest.Mock).mockReturnValue({
+    (useTheme as ReturnType<typeof vi.fn>).mockReturnValue({
       theme: 'light',
       setTheme: mockSetTheme,
     });
@@ -39,7 +40,7 @@ describe('ThemeToggle', () => {
 
   it('calls setTheme with "light" when current theme is "dark"', () => {
     // Change the mock to return dark theme
-    (useTheme as jest.Mock).mockReturnValue({
+    (useTheme as ReturnType<typeof vi.fn>).mockReturnValue({
       theme: 'dark',
       setTheme: mockSetTheme,
     });
@@ -54,7 +55,7 @@ describe('ThemeToggle', () => {
 
   it('shows sun icon in dark mode', () => {
     // Change the mock to return dark theme
-    (useTheme as jest.Mock).mockReturnValue({
+    (useTheme as ReturnType<typeof vi.fn>).mockReturnValue({
       theme: 'dark',
       setTheme: mockSetTheme,
     });
@@ -63,6 +64,8 @@ describe('ThemeToggle', () => {
 
     // Check if the sun icon is visible (dark mode shows sun icon)
     const button = screen.getByLabelText('Toggle theme');
-    expect(button).toContainElement(screen.getByRole('img', { hidden: true }));
+    // Look for the sun icon by checking the SVG class name
+    const sunIcon = button.querySelector('svg.lucide-sun');
+    expect(sunIcon).toBeInTheDocument();
   });
 });

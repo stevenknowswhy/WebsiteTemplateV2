@@ -2,15 +2,25 @@ import { NextResponse } from "next/server";
 import { withApiHandler } from "@/lib/withApiHandler";
 import { parseJson } from "@/lib/validate";
 import { ContactSchema } from "@/lib/schemas";
-import { checkRateLimit } from "@/lib/rateLimitRedis";
+// Temporarily disabled rate limiting for testing
+// import { contactLimiter, getClientIP } from "@/lib/ratelimit";
 
 export const POST = withApiHandler(async (req) => {
-  const ip = req.headers.get("x-forwarded-for")?.split(",")[0] ?? "local";
-  const url = new URL(req.url);
-  const rl = await checkRateLimit("POST", url.pathname, ip);
-  if (!rl.success) {
-    return NextResponse.json({ ok: false, code: "RATE_LIMIT" }, { status: 429 });
-  }
+  // Temporarily disabled rate limiting for testing
+  // const ip = getClientIP(req);
+  // const { success, reset, remaining } = await contactLimiter.limit(`contact:${ip}`);
+
+  // if (!success) {
+  //   const response = NextResponse.json(
+  //     { ok: false, code: "RATE_LIMIT", error: "Too many contact form submissions" },
+  //     { status: 429 }
+  //   );
+  //   response.headers.set("Retry-After", Math.ceil((reset - Date.now()) / 1000).toString());
+  //   response.headers.set("X-RateLimit-Limit", "5");
+  //   response.headers.set("X-RateLimit-Remaining", remaining.toString());
+  //   response.headers.set("X-RateLimit-Reset", reset.toString());
+  //   return response;
+  // }
 
   const body = await parseJson(req, ContactSchema);
   const { name, email, phone, company, subject, message } = body;

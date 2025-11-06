@@ -1,0 +1,394 @@
+import React, { useEffect, useRef, useState, useCallback, useMemo } from 'react';
+
+// Performance monitoring hook
+export const usePerformanceMonitor = (componentName: string) => {
+  const renderCount = useRef(0);
+  const renderTimes = useRef<number[]>([]);
+  const lastRenderTime = useRef<number>(0);
+
+  useEffect(() => {
+    const now = performance.now();
+    if (lastRenderTime.current > 0) {
+      const renderTime = now - lastRenderTime.current;
+      renderTimes.current.push(renderTime);
+
+      // Keep only last 10 render times
+      if (renderTimes.current.length > 10) {
+        renderTimes.current.shift();
+      }
+
+      // Warn if render time is > 16ms (60fps)
+      if (renderTime > 16 && process.env.NODE_ENV === 'development') {
+        console.warn(
+          `[Performance] ${componentName} render took ${renderTime.toFixed(2)}ms ` +
+          `(avg: ${renderTimes.current.reduce((a, b) => a + b, 0) / renderTimes.current.length}ms)`
+        );
+      }
+    }
+    lastRenderTime.current = now;
+
+    renderCount.current++;
+  });
+
+  return {
+    renderCount: renderCount.current,
+    avgRenderTime: renderTimes.current.length > 0
+      ? renderTimes.current.reduce((a, b) => a + b, 0) / renderTimes.current.length
+      : 0,
+    renderTimes: renderTimes.current,
+  };
+};
+
+// Optimized event handler hook
+export const useOptimizedEventHandler = <T extends (...args: any[]) => any>(
+  handler: T,
+  delay: number = 16 // Default to 60fps
+): T => {
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const lastCallRef = useRef<number>(0);
+
+  return useCallback(((...args: Parameters<T>) => {
+    const now = Date.now();
+
+    // Clear any pending timeout
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+
+    // If enough time has passed, call immediately
+    if (now - lastCallRef.current >= delay) {
+      lastCallRef.current = now;
+      return handler(...args);
+    }
+
+    // Otherwise, debounce
+    timeoutRef.current = setTimeout(() => {
+      lastCallRef.current = Date.now();
+      handler(...args);
+    }, delay - (now - lastCallRef.current));
+
+  }) as T, [handler, delay]);
+};
+
+// Virtual scrolling utilities
+export interface VirtualScrollOptions {
+  itemHeight: number | ((index: number) => number);
+  overscan?: number;
+  containerHeight: number;
+  totalItems: number;
+}
+
+export const useVirtualScroll = ({
+  itemHeight,
+  overscan = 3,
+  containerHeight,
+  totalItems,
+}: VirtualScrollOptions) => {
+  const [scrollTop, setScrollTop] = useState(0);
+
+  const getItemHeight = useCallback((index: number) => {
+    return typeof itemHeight === 'function' ? itemHeight(index) : itemHeight;
+  }, [itemHeight]);
+
+  const visibleRange = useMemo(() => {
+    let startIndex = 0;
+    let endIndex = totalItems - 1;
+    let currentOffset = 0;
+
+    // Binary search for start index
+    while (startIndex <= endIndex) {
+      const midIndex = Math.floor((startIndex + endIndex) / 2);
+      if (currentOffset + getItemHeight(midIndex) <= scrollTop) {
+        startIndex = midIndex + 1;
+        currentOffset += getItemHeight(midIndex);
+      } else {
+        endIndex = midIndex - 1;
+      }
+    }
+
+    // Calculate how many items fit in container
+    endIndex = startIndex;
+    let visibleHeight = 0;
+    while (endIndex < totalItems && visibleHeight < containerHeight) {
+      visibleHeight += getItemHeight(endIndex);
+      endIndex++;
+    }
+
+    return {
+      startIndex: Math.max(0, startIndex - overscan),
+      endIndex: Math.min(totalItems - 1, endIndex + overscan),
+      offsetY: currentOffset,
+    };
+  }, [scrollTop, containerHeight, totalItems, getItemHeight, overscan]);
+
+  return {
+    visibleRange,
+    scrollTop,
+    setScrollTop,
+  };
+};
+
+// Intersection Observer hook
+export const useIntersectionObserver = (
+  callback: IntersectionObserverCallback,
+  options?: IntersectionObserverInit
+) => {
+  const [element, setElement] = useState<Element | null>(null);
+  const observer = useRef<IntersectionObserver | null>(null);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    observer.current = new IntersectionObserver(callback, options);
+
+    return () => {
+      observer.current?.disconnect();
+    };
+  }, [callback, options]);
+
+  useEffect(() => {
+    if (element && observer.current) {
+      observer.current.observe(element);
+    }
+  }, [element]);
+
+  return setElement;
+};
+
+// Image optimization utilities
+export const useOptimizedImage = (src: string, options?: {
+  placeholder?: string;
+  blurDataURL?: string;
+  priority?: boolean;
+}) => {
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const imageRef = useRef<HTMLImageElement>(null);
+
+  const onLoad = useCallback(() => {
+    setIsLoading(false);
+    setError(null);
+  }, []);
+
+  const onError = useCallback(() => {
+    setIsLoading(false);
+    setError('Failed to load image');
+  }, []);
+
+  const getPlaceholderStyle = () => {
+    if (isLoading && options?.blurDataURL) {
+      return {
+        backgroundImage: `url(${options.blurDataURL})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        filter: 'blur(8px)',
+        transform: 'scale(1.1)',
+      };
+    }
+    return {};
+  };
+
+  return {
+    ref: imageRef,
+    src,
+    onLoad,
+    onError,
+    isLoading,
+    error,
+    placeholderStyle: getPlaceholderStyle(),
+    props: {
+      loading: options?.priority ? 'eager' : 'lazy',
+      decoding: 'async',
+    },
+  };
+};
+
+// Debounced state updates
+export const useDebouncedState = <T>(
+  initialValue: T,
+  delay: number = 300
+): [T, (value: T) => void, T] => {
+  const [state, setState] = useState<T>(initialValue);
+  const [debouncedState, setDebouncedState] = useState<T>(initialValue);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const setValue = useCallback((value: T) => {
+    setState(value);
+
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+    }
+
+    timeoutRef.current = setTimeout(() => {
+      setDebouncedState(value);
+    }, delay);
+  }, [delay]);
+
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, [delay]);
+
+  return [state, setValue, debouncedState];
+};
+
+// Component-level performance utilities
+export function withPerformanceMonitoring<P extends object>(
+  Component: React.ComponentType<P>,
+  componentName: string
+): React.ComponentType<P> {
+  return function WithPerformanceMonitoring(props: P) {
+    const metrics = usePerformanceMonitor(componentName);
+
+    // Warn about frequent re-renders
+    useEffect(() => {
+      if (metrics.renderCount > 50 && process.env.NODE_ENV === 'development') {
+        console.warn(
+          `[Performance] ${componentName} has rendered ${metrics.renderCount} times. Consider memoization.`
+        );
+      }
+    }, [metrics.renderCount, componentName]);
+
+    // Warn about slow renders
+    useEffect(() => {
+      if (metrics.avgRenderTime > 16 && process.env.NODE_ENV === 'development') {
+        console.warn(
+          `[Performance] ${componentName} average render time: ${metrics.avgRenderTime.toFixed(2)}ms. Consider optimization.`
+        );
+      }
+    }, [metrics.avgRenderTime, componentName]);
+
+    return <Component {...props} />;
+  };
+};
+
+// Optimized list component
+export interface OptimizedListProps<T> {
+  items: T[];
+  renderItem: (item: T, index: number) => React.ReactNode;
+  itemHeight: number | ((index: number) => number);
+  containerHeight: number;
+  className?: string;
+  getItemKey?: (item: T, index: number) => string;
+}
+
+export function OptimizedList<T>({
+  items,
+  renderItem,
+  itemHeight,
+  containerHeight,
+  className = '',
+  getItemKey = (item, index) => index.toString(),
+}: OptimizedListProps<T>) {
+  const { visibleRange, scrollTop, setScrollTop } = useVirtualScroll({
+    itemHeight,
+    containerHeight,
+    totalItems: items.length,
+    overscan: 3,
+  });
+
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const handleScroll = useCallback((event: React.UIEvent<HTMLDivElement>) => {
+    setScrollTop(event.currentTarget.scrollTop);
+  }, []);
+
+  const visibleItems = useMemo(() => {
+    return items.slice(visibleRange.startIndex, visibleRange.endIndex + 1);
+  }, [items, visibleRange]);
+
+  const getItemPosition = useCallback((index: number) => {
+    let offset = 0;
+    for (let i = 0; i < index; i++) {
+      offset += typeof itemHeight === 'function' ? itemHeight(i) : itemHeight;
+    }
+    return offset;
+  }, [itemHeight]);
+
+  return (
+    <div
+      ref={containerRef}
+      className={`optimized-list ${className}`}
+      onScroll={handleScroll}
+      style={{
+        height: `${containerHeight}px`,
+        overflowY: 'auto',
+        position: 'relative',
+      }}
+    >
+      <div style={{
+        height: `${items.reduce((total, _, i) => {
+          const height = typeof itemHeight === 'function' ? itemHeight(i) : itemHeight;
+          return total + height;
+        }, 0)}px`,
+        position: 'relative',
+      }}>
+        {visibleItems.map((item, index) => {
+          const actualIndex = visibleRange.startIndex + index;
+          return (
+            <div
+              key={getItemKey(item, actualIndex)}
+              style={{
+                position: 'absolute',
+                top: `${getItemPosition(actualIndex)}px`,
+                left: 0,
+                right: 0,
+                willChange: 'transform',
+              }}
+            >
+              {renderItem(item, actualIndex)}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+
+// Utility hooks
+export const usePrevious = <T>(value: T): T | undefined => {
+  const ref = useRef<T>();
+  useEffect(() => {
+    ref.current = value;
+  }, [value]);
+  return ref.current;
+};
+
+export const useClickOutside = (
+  callback: () => void,
+  elementRef?: React.RefObject<Element>
+) => {
+  const internalRef = useRef<Element>(null);
+  const ref = elementRef || internalRef;
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (ref.current && !ref.current.contains(event.target as Node)) {
+        callback();
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [callback, ref]);
+
+  return ref;
+};
+
+export default {
+  usePerformanceMonitor,
+  useOptimizedEventHandler,
+  useVirtualScroll,
+  useIntersectionObserver,
+  useOptimizedImage,
+  useDebouncedState,
+  withPerformanceMonitoring,
+  OptimizedList,
+  usePrevious,
+  useClickOutside,
+};

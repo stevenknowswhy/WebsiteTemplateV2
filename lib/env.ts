@@ -47,8 +47,7 @@ const schema = z.object({
   NEXT_PUBLIC_DISABLE_SOURCEMAP_WARN: z.string().transform(val => val === "true").default("false")
 });
 
-// Re-export ENV to maintain backward compatibility
-export { ENV };
+// ENV is exported at the end of the file
 
 function validateEnvironment() {
   try {
@@ -93,7 +92,7 @@ function validateEnvironment() {
     if (error instanceof z.ZodError) {
       console.error("❌ Environment validation failed:");
       error.errors.forEach(err => {
-        console.error(`  ${err.path.join("."): ${err.message}`);
+        console.error(`  ${err.path.join(".")}: ${err.message}`);
       });
       console.error("\n📝 Check your .env.local file and ensure all variables are properly set.");
     } else {
