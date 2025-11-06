@@ -3,6 +3,7 @@ import { generatePageMetadata, pageMetadata } from "@/lib/metadata";
 import { site } from "@/lib/siteConfig";
 import Section from "@/components/Section";
 import Hero from "@/components/Hero";
+import ExecutiveSummary from "@/components/ExecutiveSummary";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -20,59 +21,59 @@ export const metadata: Metadata = generatePageMetadata(pageMetadata.about as any
 
 const team = [
   {
-    name: "Sarah Johnson",
-    role: "CEO & Founder",
-    bio: "With over 15 years in tech, Sarah leads our vision of creating accessible digital solutions.",
-    image: <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center text-primary font-bold text-xl">SJ</div>
+    name: "Executive Leadership",
+    role: "Vision & Strategy",
+    bio: "Experienced team with backgrounds in urban planning, renewable energy, and public-private partnership development.",
+    image: <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center text-primary font-bold text-xl">EL</div>
   },
   {
-    name: "Michael Chen",
-    role: "CTO",
-    bio: "Michael brings cutting-edge technical expertise and innovation to our platform.",
-    image: <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center text-primary font-bold text-xl">MC</div>
+    name: "Engineering & Innovation",
+    role: "Technical Excellence",
+    bio: "Expertise in IoT, edge computing, solar technology, and scalable urban infrastructure deployment.",
+    image: <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center text-primary font-bold text-xl">EI</div>
   },
   {
-    name: "Emily Rodriguez",
-    role: "Head of Design",
-    bio: "Emily ensures our products are not just functional, but beautiful and intuitive.",
-    image: <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center text-primary font-bold text-xl">ER</div>
+    name: "Community Partnerships",
+    role: "Stakeholder Engagement",
+    bio: "Dedicated to building strong relationships with municipalities, community organizations, and local stakeholders.",
+    image: <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center text-primary font-bold text-xl">CP</div>
   },
   {
-    name: "David Kim",
-    role: "Lead Developer",
-    bio: "David's expertise in modern web technologies drives our technical excellence.",
-    image: <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center text-primary font-bold text-xl">DK</div>
+    name: "Public Benefit Oversight",
+    role: "Accountability & Impact",
+    bio: "Ensuring our PBC commitments are met through transparent reporting and measurable impact assessment.",
+    image: <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center text-primary font-bold text-xl">PO</div>
   }
 ];
 
 const values = [
   {
     icon: <Heart className="h-8 w-8" />,
-    title: "Customer First",
-    description: "We put our customers at the center of every decision we make."
+    title: "Public Benefit First",
+    description: "As a PBC, we prioritize positive community impact alongside sustainable business growth."
   },
   {
     icon: <Lightbulb className="h-8 w-8" />,
-    title: "Innovation",
-    description: "Constantly pushing boundaries and exploring new possibilities."
+    title: "Urban Innovation",
+    description: "Reimagining public spaces as intelligent, sustainable hubs of community connection."
   },
   {
     icon: <CheckCircle className="h-8 w-8" />,
-    title: "Quality",
-    description: "Committed to delivering excellence in every product we create."
+    title: "Privacy by Design",
+    description: "Embedding data protection and individual privacy into every aspect of our technology."
   },
   {
     icon: <Star className="h-8 w-8" />,
-    title: "Integrity",
-    description: "Building trust through transparency and ethical practices."
+    title: "Equitable Access",
+    description: "Ensuring digital inclusion and economic opportunity for all communities we serve."
   }
 ];
 
 const stats = [
-  { label: "Happy Clients", value: "1000+" },
-  { label: "Projects Completed", value: "500+" },
-  { label: "Team Members", value: "15" },
-  { label: "Years Experience", value: "10+" }
+  { label: "Cities Targeted", value: "50+" },
+  { label: "Pilot Nodes", value: "10" },
+  { label: "Potential Daily Users", value: "1M+" },
+  { label: "Annual Carbon Savings", value: "500T" }
 ];
 
 export default function AboutPage() {
@@ -80,15 +81,15 @@ export default function AboutPage() {
     <div className="min-h-screen">
       {/* Hero Section */}
       <Hero
-        title="About {site.name}"
-        description="We're passionate about building exceptional digital experiences that help businesses thrive in the modern world."
+        title="About Forhem"
+        description="Transforming urban spaces into intelligent, equitable infrastructure that serves communities and drives sustainable progress."
         primaryCta={{
-          label: "Our Services",
-          href: "/services"
+          label: "Our Solutions",
+          href: "/solutions"
         }}
         secondaryCta={{
-          label: "Contact Us",
-          href: "/contact"
+          label: "Investor Relations",
+          href: "/investors"
         }}
       />
 
@@ -99,10 +100,17 @@ export default function AboutPage() {
             Our Mission
           </h2>
           <p className="text-lg text-muted-foreground">
-            At {site.name}, we believe in the power of technology to transform businesses and improve lives.
-            Our mission is to provide cutting-edge solutions that are accessible, reliable, and scalable.
-            We're committed to helping our clients succeed by delivering innovative products and exceptional service.
+            As a Public Benefit Corporation, Forhem is dedicated to transforming urban transit spaces into engines of positive change.
+            We create intelligent, privacy-centered infrastructure that enhances public safety, digital equity, and environmental sustainability
+            while fostering inclusive economic growth through innovative public-private partnerships.
           </p>
+        </div>
+      </Section>
+
+      {/* Executive Summary Section */}
+      <Section>
+        <div className="mx-auto max-w-5xl">
+          <ExecutiveSummary />
         </div>
       </Section>
 
@@ -142,8 +150,8 @@ export default function AboutPage() {
 
       {/* Team Section */}
       <Section
-        title="Meet Our Team"
-        description="The talented people behind {site.name}"
+        title="Our Core Competencies"
+        description="The expertise driving our public benefit mission"
       >
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
           {team.map((member, index) => (
@@ -165,25 +173,25 @@ export default function AboutPage() {
 
       {/* Story Section */}
       <Section
-        title="Our Story"
-        description="How {site.name} came to be"
+        title="Our Journey"
+        description="Key milestones in developing the City Smart Node vision"
       >
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-3">
           {[
             {
-              year: "2015",
-              title: "The Beginning",
-              description: "Started as a small consultancy with a big vision to make quality software accessible to everyone."
+              year: "2020",
+              title: "Urban Research Phase",
+              description: "Conducted extensive research on underutilized urban spaces and identified transit hubs as high-impact opportunities for smart infrastructure deployment."
             },
             {
-              year: "2018",
-              title: "Growth & Innovation",
-              description: "Expanded our team and launched our first SaaS product, serving over 100 clients worldwide."
+              year: "2023",
+              title: "Pilot Development",
+              description: "Developed and tested initial CSN prototypes with solar power, edge computing, and privacy-first design principles in collaboration with municipal partners."
             },
             {
-              year: "2024",
-              title: "The Present",
-              description: "Now a full-service digital agency with a global reach, helping businesses transform and thrive."
+              year: "2026",
+              title: "Market Street Launch",
+              description: "Deploying 10 pilot nodes on San Francisco's Market Street in partnership with SFMTA, validating our technology and public benefit model at scale."
             }
           ].map((milestone, index) => (
             <Card key={index}>
@@ -199,25 +207,25 @@ export default function AboutPage() {
 
       {/* Why Choose Us */}
       <Section
-        title="Why Choose Us"
-        description="What sets {site.name} apart"
+        title="Why Partner With Forhem"
+        description="What makes our approach unique and impactful"
       >
         <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
           {[
             {
               icon: <Users className="h-8 w-8" />,
-              title: "Expert Team",
-              description: "Our team consists of experienced professionals who are passionate about their craft."
+              title: "Public Benefit Commitment",
+              description: "As a PBC, we're legally bound to balance profit with purpose, ensuring positive community impact in everything we do."
             },
             {
               icon: <Target className="h-8 w-8" />,
-              title: "Client-Focused",
-              description: "We take the time to understand your unique needs and deliver tailored solutions."
+              title: "Zero-Capex Municipal Model",
+              description: "Cities can deploy our infrastructure without upfront costs, sharing in revenue while gaining valuable insights and services."
             },
             {
               icon: <Award className="h-8 w-8" />,
-              title: "Proven Track Record",
-              description: "Hundreds of successful projects and satisfied clients speak to our expertise."
+              title: "Privacy-First Technology",
+              description: "All data processing happens locally with GDPR-compliant anonymization, ensuring citizen privacy while providing useful analytics."
             }
           ].map((reason, index) => (
             <Card key={index}>
