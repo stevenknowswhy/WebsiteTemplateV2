@@ -1,7 +1,17 @@
 {
-  "name": "streamproject",
+  "name": "forhem",
   "version": "0.1.0",
   "private": true,
+  "description": "A public benefit company based in San Francisco, CA",
+  "homepage": "https://forhem.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/stevenknowswhy/ForhemPBC.git"
+  },
+  "bugs": {
+    "url": "https://github.com/stevenknowswhy/ForhemPBC/issues"
+  },
+  "author": "Forhem, PBC <support@forhem.com>",
   "scripts": {
     "setup": "node setup.js",
     "dev": "next dev",

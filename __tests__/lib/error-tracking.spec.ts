@@ -108,7 +108,7 @@ describe('ErrorTrackingService', () => {
   });
 
   it('should set user context', () => {
-    const user = { id: '123', email: 'test@example.com' };
+    const user = { id: '123', email: 'test@forhem.com' };
 
     errorTracker.setUser(user);
 

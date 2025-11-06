@@ -28,7 +28,7 @@ vi.mock("next/navigation", () => ({
 
 // Mock environment variables
 process.env.NEXT_PUBLIC_APP_URL = "http://localhost:3000";
-process.env.NEXT_PUBLIC_APP_NAME = "TemplateAppV2";
+process.env.NEXT_PUBLIC_APP_NAME = "Forhem";
 
 // Global test timeout
 vi.setConfig({ testTimeout: 10000 });

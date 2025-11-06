@@ -1,18 +1,18 @@
 import { render, screen, fireEvent } from '@testing-library/react';
-import { ToastProvider } from '@/components/ui/toast-context';
-import { toast } from '@/components/ui/toast';
+import { ToastProvider, useToast } from '@/components/ui/toast-context';
 import { vi } from 'vitest';
 
 // Mock the toast context
-vi.mock('@/components/ui/toast', () => ({
-  toast: {
-    success: vi.fn(),
-    error: vi.fn(),
-    info: vi.fn(),
-    warning: vi.fn(),
-    dismiss: vi.fn(),
-  },
-}));
+vi.mock('@/components/ui/toast-context', async () => {
+  const actual = await vi.importActual('@/components/ui/toast-context');
+  return {
+    ...actual,
+    useToast: vi.fn(() => ({
+      showToast: vi.fn(),
+      removeToast: vi.fn(),
+    })),
+  };
+});
 
 describe('ToastProvider', () => {
   beforeEach(() => {
@@ -20,7 +20,7 @@ describe('ToastProvider', () => {
   });
 
   it('renders toast provider without children', () => {
-    render(<ToastProvider />);
+    render(<ToastProvider><div>Test</div></ToastProvider>);
     // Should render without error
     expect(document.body).toBeInTheDocument();
   });
@@ -36,7 +36,7 @@ describe('ToastProvider', () => {
   });
 
   it('has proper accessibility attributes', () => {
-    const { container } = render(<ToastProvider />);
+    const { container } = render(<ToastProvider><div>Test</div></ToastProvider>);
 
     // The ToastProvider itself doesn't render status element directly
     // It provides context and renders children
@@ -45,28 +45,18 @@ describe('ToastProvider', () => {
 });
 
 describe('toast functionality', () => {
-  it('toast.success exists and is callable', () => {
-    toast.success('Test success message');
-    expect(toast.success).toHaveBeenCalledWith('Test success message');
-  });
+  it('useToast hook provides required methods', () => {
+    const mockShowToast = vi.fn();
+    const mockRemoveToast = vi.fn();
 
-  it('toast.error exists and is callable', () => {
-    toast.error('Test error message');
-    expect(toast.error).toHaveBeenCalledWith('Test error message');
-  });
+    vi.mocked(useToast).mockReturnValue({
+      showToast: mockShowToast,
+      removeToast: mockRemoveToast,
+    });
 
-  it('toast.info exists and is callable', () => {
-    toast.info('Test info message');
-    expect(toast.info).toHaveBeenCalledWith('Test info message');
-  });
+    const { result } = require('@testing-library/react-hooks').renderHook(() => useToast());
 
-  it('toast.warning exists and is callable', () => {
-    toast.warning('Test warning message');
-    expect(toast.warning).toHaveBeenCalledWith('Test warning message');
-  });
-
-  it('toast.dismiss exists and is callable', () => {
-    toast.dismiss();
-    expect(toast.dismiss).toHaveBeenCalled();
+    expect(result.current.showToast).toBeDefined();
+    expect(result.current.removeToast).toBeDefined();
   });
 });

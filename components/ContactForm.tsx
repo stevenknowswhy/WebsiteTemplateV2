@@ -191,7 +191,7 @@ export default function ContactForm({ className = "" }: ContactFormProps) {
               <Input
                 id="company"
                 type="text"
-                placeholder="Your Company"
+                placeholder="Company name"
                 value={formData.company}
                 onChange={(e) => handleInputChange('company', e.target.value)}
                 disabled={isSubmitting}

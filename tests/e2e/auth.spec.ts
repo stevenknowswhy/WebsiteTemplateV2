@@ -20,7 +20,7 @@ test.describe("Authentication Flow", () => {
   });
 
   test("shows error for non-existent email", async ({ page }) => {
-    await page.getByLabel(/email/i).fill("nonexistent@example.com");
+    await page.getByLabel(/email/i).fill("nonexistent@forhem.com");
     await page.getByRole("button", { name: /sign in/i }).click();
 
     // Should show error message
@@ -38,10 +38,10 @@ test.describe("Authentication Flow", () => {
   test("supports keyboard navigation", async ({ page }) => {
     // Test tab order
     await page.keyboard.press("Tab");
-    expect(await page.getByLabel(/email/i).isFocused()).toBeTruthy();
+    expect(await page.getByLabel(/email/i).evaluate(el => el === document.activeElement)).toBeTruthy();
 
     await page.keyboard.press("Tab");
-    expect(await page.getByRole("button", { name: /sign in/i }).isFocused()).toBeTruthy();
+    expect(await page.getByRole("button", { name: /sign in/i }).evaluate(el => el === document.activeElement)).toBeTruthy();
 
     await page.keyboard.press("Enter");
     // Should trigger form submission
@@ -62,7 +62,7 @@ test.describe("Authentication Flow", () => {
       await route.continue();
     });
 
-    await page.getByLabel(/email/i).fill("test@example.com");
+    await page.getByLabel(/email/i).fill("test@forhem.com");
     await page.getByRole("button", { name: /sign in/i }).click();
 
     // Should show loading state
@@ -73,7 +73,7 @@ test.describe("Authentication Flow", () => {
     // Simulate network error
     await page.route("**/auth/v1/**", route => route.abort("failed"));
 
-    await page.getByLabel(/email/i).fill("test@example.com");
+    await page.getByLabel(/email/i).fill("test@forhem.com");
     await page.getByRole("button", { name: /sign in/i }).click();
 
     // Should show error message

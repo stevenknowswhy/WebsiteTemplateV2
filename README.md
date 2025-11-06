@@ -1,6 +1,6 @@
-# TemplateAppV2 - Next.js Website & SaaS Template
+# Forhem PBC
 
-A modern, production-ready template with Next.js that works as both a **general-purpose website** and **SaaS application starter**. **Featuring fully automated setup via Claude Code** - go from zero to running in minutes!
+A public benefit company based in San Francisco, CA. **Resilient. Hidden. Hyper-efficient.**
 
 ## 🤖 Built for Claude Code
 

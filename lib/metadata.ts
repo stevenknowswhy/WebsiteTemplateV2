@@ -7,7 +7,7 @@ import { site } from './siteConfig';
 export const seoConfig = {
   siteName: site.name,
   domain: site.domain,
-  description: 'Modern web application template with Next.js, Tailwind CSS, and Supabase',
+  description: 'Public Benefit Corp website + product funnels',
   ogImage: '/og.jpg',
   twitterCard: 'summary_large_image',
   twitterHandle: site.social.find(s => s.label === 'X')?.href || '',
@@ -131,9 +131,9 @@ export function generatePageMetadata(options: PageMetadataOptions, parent?: Reso
 export const pageMetadata = {
   home: {
     title: 'Home',
-    description: 'Welcome to TemplateAppV2 - Your modern web application solution with cutting-edge technology and seamless user experience.',
+    description: 'Welcome to Forhem - Resilient. Hidden. Hyper-efficient.',
     path: '/',
-    keywords: ['web application', 'template', 'nextjs', 'saas', 'modern web'],
+    keywords: ['public benefit corporation', 'resilient infrastructure', 'hyper-efficient', 'forhem'],
   },
   services: {
     title: 'Services',
@@ -148,10 +148,10 @@ export const pageMetadata = {
     keywords: ['pricing', 'plans', 'saas pricing', 'subscription', 'cost'],
   },
   about: {
-    title: 'About Us',
-    description: 'Learn about our story, mission, and the team behind TemplateAppV2. We are passionate about creating exceptional web experiences.',
+    title: 'About',
+    description: 'Learn about Forhem PBC, our mission as a public benefit corporation, and our commitment to resilient infrastructure.',
     path: '/about',
-    keywords: ['about us', 'team', 'company', 'mission', 'values'],
+    keywords: ['about forhem', 'public benefit corporation', 'mission', 'resilient infrastructure'],
   },
   contact: {
     title: 'Contact',
@@ -167,7 +167,7 @@ export const pageMetadata = {
   },
   auth: {
     title: 'Authentication',
-    description: 'Sign in to your account or create a new one to access all features of TemplateAppV2.',
+    description: 'Sign in to your account or create a new one to access all features of Forhem PBC.',
     path: '/auth',
     noIndex: true,
   },

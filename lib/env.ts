@@ -40,7 +40,7 @@ const schema = z.object({
 
   // OpenTelemetry (Optional)
   OTEL_EXPORTER_OTLP_ENDPOINT: z.string().url().optional(),
-  OTEL_SERVICE_NAME: z.string().default("templateappv2"),
+  OTEL_SERVICE_NAME: z.string().default("forhem"),
 
   // Development flags
   NEXT_PUBLIC_DEBUG: z.string().transform(val => val === "true").default("false"),

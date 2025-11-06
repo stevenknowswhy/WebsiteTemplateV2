@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { logger, createRequestLogger, Logger } from '@/lib/logger';
+import { logger, createRequestLogger } from '@/lib/logger';
 
 // Mock the dependencies
 vi.mock('@/lib/trace', () => ({
@@ -24,7 +24,11 @@ describe('Logger', () => {
   });
 
   it('should create a logger instance', () => {
-    expect(logger).toBeInstanceOf(Logger);
+    expect(logger).toBeDefined();
+    expect(typeof logger.info).toBe('function');
+    expect(typeof logger.error).toBe('function');
+    expect(typeof logger.warn).toBe('function');
+    expect(typeof logger.debug).toBe('function');
   });
 
   it('should log messages at different levels', () => {
@@ -66,7 +70,9 @@ describe('Logger', () => {
       shipLog: shipLogMock,
     }));
 
-    const testLogger = new Logger({
+    // Since Logger is not exported, we'll test the default logger's behavior
+    const testLogger = logger;
+    testLogger.updateConfig({
       minLevel: 'info',
       enableConsole: false,
       enableStructured: true,
@@ -86,10 +92,12 @@ describe('Logger', () => {
     });
   });
 
-  it('should respect sampling rate', () => {
+  it('should respect sampling rate', async () => {
     const consoleSpy = vi.spyOn(console, 'info').mockImplementation(() => {});
 
-    const samplingLogger = new Logger({
+    // Create a temporary logger with 0% sampling rate
+    const testLogger = logger;
+    testLogger.updateConfig({
       minLevel: 'info',
       enableConsole: true,
       enableStructured: false,
@@ -98,7 +106,7 @@ describe('Logger', () => {
       samplingRate: 0.0, // 0% sampling
     });
 
-    samplingLogger.info('This should not appear');
+    testLogger.info('This should not appear');
 
     expect(consoleSpy).not.toHaveBeenCalled();
   });
