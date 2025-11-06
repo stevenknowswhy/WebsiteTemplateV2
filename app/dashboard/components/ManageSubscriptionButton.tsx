@@ -1,9 +1,11 @@
 'use client';
 
 import { useState } from 'react';
+import { useToast } from '@/components/ui/toast-context';
 
 export function ManageSubscriptionButton() {
   const [isLoading, setIsLoading] = useState(false);
+  const { showToast } = useToast();
 
   const handleManageSubscription = async () => {
     try {
@@ -15,7 +17,7 @@ export function ManageSubscriptionButton() {
       if (!response.ok) {
         const error = await response.json();
         console.error('Error creating portal session:', error);
-        alert('Failed to open billing portal. Please try again.');
+        showToast('Failed to open billing portal. Please try again.', 'error');
         return;
       }
 
@@ -25,7 +27,7 @@ export function ManageSubscriptionButton() {
       window.location.href = url;
     } catch (error) {
       console.error('Error:', error);
-      alert('Failed to open billing portal. Please try again.');
+      showToast('Failed to open billing portal. Please try again.', 'error');
     } finally {
       setIsLoading(false);
     }

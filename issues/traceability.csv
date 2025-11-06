@@ -1,0 +1,28 @@
+id,domain,severity,owner,status,pr_link,test_ids,evidence_link,released_in,notes,last_updated
+SEC-001,security,P0,,TODO,,,,,,Hardcoded API keys in .env.local,2025-11-03
+SEC-002,security,P0,,TODO,,,,,,Open redirect vulnerability in auth callback,2025-11-03
+SEC-003,security,P1,,TODO,,,,,,Insufficient input validation on contact form,2025-11-03
+SEC-004,security,P1,,TODO,,,,,,Missing rate limiting on API endpoints,2025-11-03
+SEC-005,security,P1,,TODO,,,,,,No CSRF protection,2025-11-03
+SEC-006,security,P1,,TODO,,,,,,Exposed error details,2025-11-03
+SEC-007,security,P1,,TODO,,,,,,Missing security headers,2025-11-03
+SEC-008,security,P2,,TODO,,,,,,Weak email validation,2025-11-03
+PRV-001,privacy,P0,,TODO,,,,,,Missing privacy policy and terms of service,2025-11-03
+PRV-002,privacy,P0,,TODO,,,,,,No user consent mechanisms,2025-11-03
+PRV-003,privacy,P1,,TODO,,,,,,Public exposure of user profile data,2025-11-03
+PRV-004,privacy,P1,,TODO,,,,,,No data deletion/export capabilities,2025-11-03
+ACC-001,accessibility,P0,,TODO,,,,,,Missing form field labels and error association,2025-11-03
+ACC-002,accessibility,P0,,TODO,,,,,,Insufficient focus management in mobile navigation,2025-11-03
+ACC-003,accessibility,P1,,TODO,,,,,,Missing skip navigation link functionality,2025-11-03
+ACC-004,accessibility,P1,,TODO,,,,,,Missing ARIA labels for interactive icons,2025-11-03
+ACC-005,accessibility,P1,,TODO,,,,,,Inappropriate use of tabIndex="-1",2025-11-03
+ACC-006,accessibility,P1,,TODO,,,,,,Form validation errors not programmatically associated,2025-11-03
+ACC-007,accessibility,P1,,TODO,,,,,,Missing heading structure in Hero component,2025-11-03
+ACC-008,accessibility,P1,,TODO,,,,,,Insufficient color contrast in status indicators,2025-11-03
+ARCH-001,architecture,P0,,TODO,,,,,,No testing framework,2025-11-03
+ARCH-002,architecture,P1,,TODO,,,,,,Missing root middleware,2025-11-03
+ARCH-003,architecture,P1,,TODO,,,,,,Inconsistent pricing configuration,2025-11-03
+ARCH-004,architecture,P1,,TODO,,,,,,Database connection type confusion,2025-11-03
+ARCH-005,architecture,P1,,TODO,,,,,,Environment variable validation only runtime,2025-11-03
+DEAD-001,dead-code,P0,,TODO,,,,,,Orphaned proxy file,2025-11-03
+DEAD-002,dead-code,P0,,TODO,,,,,,Test files with duplicate logic,2025-11-03

@@ -1,11 +1,11 @@
 'use client';
 
 import { signInWithMagicLink } from '@/app/actions/auth';
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 
-export default function LoginPage() {
+function LoginContent() {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
@@ -64,7 +64,13 @@ export default function LoginPage() {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white sm:text-sm"
+                  aria-invalid={message?.type === 'error'}
+                  aria-describedby={message?.type === 'error' ? 'email-error' : undefined}
+                  className={`appearance-none block w-full px-3 py-2 border rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 dark:bg-gray-700 dark:text-white sm:text-sm ${
+                    message?.type === 'error'
+                      ? 'border-red-300 text-red-900 focus:ring-red-500 focus:border-red-500 dark:border-red-600 dark:text-red-100'
+                      : 'border-gray-300 dark:border-gray-600 focus:ring-blue-500 focus:border-blue-500 dark:focus:ring-blue-600 dark:focus:border-blue-600'
+                  }`}
                   placeholder="you@example.com"
                   disabled={loading}
                 />
@@ -73,6 +79,9 @@ export default function LoginPage() {
 
             {message && (
               <div
+                id={message.type === 'error' ? 'email-error' : undefined}
+                role="alert"
+                aria-live="polite"
                 className={`rounded-md p-4 ${
                   message.type === 'error'
                     ? 'bg-red-50 dark:bg-red-900/20 text-red-800 dark:text-red-200'
@@ -127,5 +136,13 @@ export default function LoginPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <LoginContent />
+    </Suspense>
   );
 }

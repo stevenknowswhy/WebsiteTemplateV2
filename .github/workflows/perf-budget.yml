@@ -1,0 +1,24 @@
+name: Perf Budget
+on:
+  pull_request:
+
+jobs:
+  budget:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with: { version: 9 }
+      - run: pnpm i --frozen-lockfile
+      - run: ANALYZE=true pnpm build
+      - name: Enforce initial JS budget (< 500KB, warn only for now)
+        run: |
+          BYTES=$(node -e "try{const f=require('fs');const p='.next/analyze/client.html';const h=f.readFileSync(p,'utf8');const m=h.match(/Total initial JS[^0-9]+([0-9,.]+)\s*KB/i);if(!m) throw 1;console.log(parseFloat(m[1])*1024);}catch(e){console.log(0)}")
+          echo "Initial JS: $BYTES bytes"
+          if [ "$BYTES" -gt 512000 ]; then
+            echo "::warning ::Initial JS exceeds 500KB ($BYTES bytes)"
+          fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: next-analyze
+          path: .next/analyze

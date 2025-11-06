@@ -10,9 +10,25 @@ import { createClient } from '@/lib/supabase/server';
 import { stripe } from '@/lib/stripe/server';
 import { getPriceId } from '@/lib/stripe/config';
 import { revalidatePath } from 'next/cache';
+import { paymentLimiter, getClientIP } from '@/lib/ratelimit';
 
 export async function POST(request: NextRequest) {
   try {
+    // Apply rate limiting to payment endpoint
+    const ip = getClientIP(request);
+    const { success, reset, remaining } = await paymentLimiter.limit(`payment:${ip}`);
+
+    if (!success) {
+      const response = NextResponse.json(
+        { error: "Too many payment attempts" },
+        { status: 429 }
+      );
+      response.headers.set("Retry-After", Math.ceil((reset - Date.now()) / 1000).toString());
+      response.headers.set("X-RateLimit-Limit", "5");
+      response.headers.set("X-RateLimit-Remaining", remaining.toString());
+      response.headers.set("X-RateLimit-Reset", reset.toString());
+      return response;
+    }
     const supabase = await createClient();
 
     // Check if user is authenticated

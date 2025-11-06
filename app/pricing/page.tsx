@@ -1,338 +1,210 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import Link from 'next/link';
-import { PRICING, formatPrice, calculateYearlySavings } from '@/lib/stripe/config';
-
-type BillingPeriod = 'monthly' | 'yearly';
-type Tier = 'free' | 'pro' | 'enterprise';
+import { useState } from 'react';
+import React from 'react';
+import { site } from "@/lib/siteConfig";
+import Section from "@/components/Section";
+import PricingCard from "@/components/PricingCard";
+import PricingToggle from "@/components/PricingToggle";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { plans, getFeatureComparison } from "@/lib/plans";
+import { Check, X, Shield, Zap, Headphones, Database } from "lucide-react";
 
 export default function PricingPage() {
-  const [billingPeriod, setBillingPeriod] = useState<BillingPeriod>('monthly');
-  const [loading, setLoading] = useState<string | null>(null);
-  const router = useRouter();
-  const searchParams = useSearchParams();
-  const appName = process.env.NEXT_PUBLIC_APP_NAME || "SaaS Boilerplate";
+  const [isYearly, setIsYearly] = useState(false);
 
-  const handleSubscribe = async (tier: 'pro' | 'enterprise', skipConfirm = false) => {
-    setLoading(tier);
+  const features = [
+    {
+      icon: <Shield className="h-6 w-6" />,
+      title: "Secure & Reliable",
+      description: "Enterprise-grade security with 99.9% uptime guarantee",
+    },
+    {
+      icon: <Zap className="h-6 w-6" />,
+      title: "Lightning Fast",
+      description: "Optimized performance with global CDN",
+    },
+    {
+      icon: <Headphones className="h-6 w-6" />,
+      title: "24/7 Support",
+      description: "Premium support for paid plans",
+    },
+    {
+      icon: <Database className="h-6 w-6" />,
+      title: "Unlimited Storage",
+      description: "No limits on Pro and Enterprise plans",
+    },
+  ];
 
-    // Confirm the subscription details with the user (unless skipping for auto-checkout)
-    if (!skipConfirm) {
-      const tierName = tier === 'pro' ? 'Pro' : 'Enterprise';
-      const periodText = billingPeriod === 'monthly' ? 'Monthly' : 'Yearly';
-      const price = PRICING[tier].price[billingPeriod];
-      const priceText = formatPrice(price);
-      const perText = billingPeriod === 'monthly' ? 'month' : 'year';
-
-      const confirmed = confirm(
-        `You are about to subscribe to the ${tierName} plan (${periodText} billing).\n\n` +
-        `Price: ${priceText}/${perText}\n\n` +
-        `Click OK to proceed to checkout.`
-      );
-
-      if (!confirmed) {
-        setLoading(null);
-        return;
-      }
-    }
-
-    try {
-      const response = await fetch('/api/stripe/checkout', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          tier,
-          period: billingPeriod,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        // If unauthorized (not logged in), redirect to login with return URL
-        if (response.status === 401) {
-          const returnUrl = `/pricing?tier=${tier}&period=${billingPeriod}&checkout=true`;
-          router.push(`/auth/login?redirect=${encodeURIComponent(returnUrl)}`);
-          return;
-        }
-        throw new Error(data.error || 'Failed to create checkout session');
-      }
-
-      if (data.url) {
-        // Show different messages based on what's happening
-        if (data.isUpgrade) {
-          alert('Your subscription has been updated! Redirecting to dashboard...');
-        } else if (data.isPortal) {
-          alert('Redirecting you to the billing portal to manage your subscription.');
-        }
-
-        // Redirect to Stripe Checkout, Billing Portal, or Dashboard
-        window.location.href = data.url;
-      }
-    } catch (error) {
-      console.error('Error:', error);
-      alert(error instanceof Error ? error.message : 'Something went wrong. Please try again.');
-      setLoading(null);
-    }
-  };
-
-  // Auto-trigger checkout if returning from login
-  useEffect(() => {
-    const shouldCheckout = searchParams.get('checkout');
-    const tier = searchParams.get('tier') as 'pro' | 'enterprise' | null;
-    const period = searchParams.get('period') as 'monthly' | 'yearly' | null;
-
-    if (shouldCheckout === 'true' && tier && period) {
-      // Set the billing period to match what they selected
-      setBillingPeriod(period);
-      // Auto-trigger the checkout (skip confirmation since they already confirmed)
-      handleSubscribe(tier, true);
-      // Clean up URL params
-      router.replace('/pricing', { scroll: false });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams]);
+  const featureComparison = getFeatureComparison();
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
-      {/* Navigation */}
-      <nav className="bg-white dark:bg-gray-800 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16 items-center">
-            <Link href="/" className="text-xl font-bold text-gray-900 dark:text-white">
-              {appName}
-            </Link>
-            <div className="flex items-center space-x-4">
-              <Link
-                href="/"
-                className="text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
-              >
-                Home
-              </Link>
-              <Link
-                href="/dashboard"
-                className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md dark:bg-blue-500 dark:hover:bg-blue-600"
-              >
-                Dashboard
-              </Link>
-            </div>
-          </div>
-        </div>
-      </nav>
-
-      {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {/* Header */}
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+    <div className="min-h-screen">
+      {/* Hero Section */}
+      <Section>
+        <div className="text-center mx-auto max-w-4xl">
+          <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
             Simple, Transparent Pricing
           </h1>
-          <p className="text-xl text-gray-600 dark:text-gray-400 mb-8">
-            Choose the plan that's right for you
+          <p className="mt-6 text-xl text-muted-foreground">
+            Choose the perfect plan for your needs. All plans include core features
+            with scalable options as you grow.
           </p>
+        </div>
+      </Section>
 
-          {/* Billing Toggle */}
-          <div className="flex flex-col items-center justify-center space-y-2">
-            <div className="flex items-center space-x-4">
-              <span
-                className={`text-sm font-medium ${
-                  billingPeriod === 'monthly'
-                    ? 'text-gray-900 dark:text-white'
-                    : 'text-gray-500 dark:text-gray-400'
-                }`}
-              >
-                Monthly
-              </span>
-            <button
-              onClick={() =>
-                setBillingPeriod(billingPeriod === 'monthly' ? 'yearly' : 'monthly')
-              }
-              className="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 bg-blue-600"
-              role="switch"
-              aria-checked={billingPeriod === 'yearly'}
-            >
-              <span
-                className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
-                  billingPeriod === 'yearly' ? 'translate-x-5' : 'translate-x-0'
-                }`}
-              />
-            </button>
-            <span
-              className={`text-sm font-medium ${
-                billingPeriod === 'yearly'
-                  ? 'text-gray-900 dark:text-white'
-                  : 'text-gray-500 dark:text-gray-400'
-              }`}
-            >
-              Yearly
-              <span className="ml-1.5 inline-flex items-center rounded-full bg-green-100 px-2 py-0.5 text-xs font-medium text-green-800 dark:bg-green-900/20 dark:text-green-400">
-                Save 20%
-              </span>
-            </span>
-            </div>
-            <div className="text-xs text-gray-600 dark:text-gray-400 font-medium">
-              Current selection: <span className="text-blue-600 dark:text-blue-400 font-bold">{billingPeriod === 'monthly' ? 'Monthly' : 'Yearly'} billing</span>
-            </div>
-          </div>
+      {/* Pricing Cards */}
+      <Section>
+        <div className="text-center mb-8">
+          <PricingToggle
+            isYearly={isYearly}
+            onToggle={setIsYearly}
+          />
         </div>
 
-        {/* Pricing Cards */}
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-          {/* Free Tier */}
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden border-2 border-gray-200 dark:border-gray-700">
-            <div className="p-6">
-              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-                {PRICING.free.name}
-              </h3>
-              <div className="flex items-baseline mb-6">
-                <span className="text-5xl font-bold text-gray-900 dark:text-white">$0</span>
-                <span className="ml-2 text-gray-500 dark:text-gray-400">/month</span>
-              </div>
-              <ul className="space-y-4 mb-8">
-                {PRICING.free.features.map((feature, index) => (
-                  <li key={index} className="flex items-start">
-                    <svg
-                      className="h-6 w-6 text-green-500 flex-shrink-0"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M5 13l4 4L19 7"
-                      />
-                    </svg>
-                    <span className="ml-3 text-gray-600 dark:text-gray-400">{feature}</span>
-                  </li>
-                ))}
-              </ul>
-              <Link
-                href="/auth/login"
-                className="block w-full text-center px-4 py-2 border border-gray-300 dark:border-gray-600 text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
-              >
-                Get Started
-              </Link>
-            </div>
-          </div>
-
-          {/* Pro Tier */}
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden border-2 border-blue-500 dark:border-blue-400 relative">
-            <div className="absolute top-0 right-0 bg-blue-500 text-white px-3 py-1 text-xs font-semibold rounded-bl-lg">
-              POPULAR
-            </div>
-            <div className="p-6">
-              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-                {PRICING.pro.name}
-              </h3>
-              <div className="flex items-baseline mb-2">
-                <span className="text-5xl font-bold text-gray-900 dark:text-white">
-                  {formatPrice(PRICING.pro.price[billingPeriod])}
-                </span>
-                <span className="ml-2 text-gray-500 dark:text-gray-400">
-                  /{billingPeriod === 'monthly' ? 'month' : 'year'}
-                </span>
-              </div>
-              {billingPeriod === 'yearly' && (
-                <p className="text-sm text-green-600 dark:text-green-400 mb-6">
-                  Save {formatPrice(calculateYearlySavings('pro'))} per year
-                </p>
-              )}
-              <ul className="space-y-4 mb-8 mt-6">
-                {PRICING.pro.features.map((feature, index) => (
-                  <li key={index} className="flex items-start">
-                    <svg
-                      className="h-6 w-6 text-green-500 flex-shrink-0"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M5 13l4 4L19 7"
-                      />
-                    </svg>
-                    <span className="ml-3 text-gray-600 dark:text-gray-400">{feature}</span>
-                  </li>
-                ))}
-              </ul>
-              <button
-                onClick={() => handleSubscribe('pro')}
-                disabled={loading !== null}
-                className="block w-full text-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-blue-500 dark:hover:bg-blue-600"
-              >
-                {loading === 'pro' ? 'Loading...' : `Get Pro (${billingPeriod === 'monthly' ? 'Monthly' : 'Yearly'})`}
-              </button>
-            </div>
-          </div>
-
-          {/* Enterprise Tier */}
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden border-2 border-gray-200 dark:border-gray-700">
-            <div className="p-6">
-              <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-                {PRICING.enterprise.name}
-              </h3>
-              <div className="flex items-baseline mb-2">
-                <span className="text-5xl font-bold text-gray-900 dark:text-white">
-                  {formatPrice(PRICING.enterprise.price[billingPeriod])}
-                </span>
-                <span className="ml-2 text-gray-500 dark:text-gray-400">
-                  /{billingPeriod === 'monthly' ? 'month' : 'year'}
-                </span>
-              </div>
-              {billingPeriod === 'yearly' && (
-                <p className="text-sm text-green-600 dark:text-green-400 mb-6">
-                  Save {formatPrice(calculateYearlySavings('enterprise'))} per year
-                </p>
-              )}
-              <ul className="space-y-4 mb-8 mt-6">
-                {PRICING.enterprise.features.map((feature, index) => (
-                  <li key={index} className="flex items-start">
-                    <svg
-                      className="h-6 w-6 text-green-500 flex-shrink-0"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M5 13l4 4L19 7"
-                      />
-                    </svg>
-                    <span className="ml-3 text-gray-600 dark:text-gray-400">{feature}</span>
-                  </li>
-                ))}
-              </ul>
-              <button
-                onClick={() => handleSubscribe('enterprise')}
-                disabled={loading !== null}
-                className="block w-full text-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-gray-900 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-gray-700 dark:hover:bg-gray-600"
-              >
-                {loading === 'enterprise' ? 'Loading...' : `Get Enterprise (${billingPeriod === 'monthly' ? 'Monthly' : 'Yearly'})`}
-              </button>
-            </div>
-          </div>
+          {plans.map((plan) => (
+            <PricingCard
+              key={plan.id}
+              plan={plan}
+              isYearly={isYearly}
+            />
+          ))}
         </div>
+      </Section>
 
-        {/* FAQ or Additional Info */}
-        <div className="mt-16 text-center">
-          <p className="text-gray-600 dark:text-gray-400">
-            All plans include a 14-day money-back guarantee. Need help choosing?{' '}
-            <a href="#" className="text-blue-600 hover:text-blue-700 dark:text-blue-400">
-              Contact our sales team
-            </a>
+      {/* Feature Comparison */}
+      <Section
+        title="Feature Comparison"
+        description="Compare features across all plans"
+      >
+        <div className="overflow-x-auto">
+          <Card>
+            <CardHeader>
+              <CardTitle>Features at a Glance</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-4 gap-4 text-sm">
+                <div className="font-medium">Feature</div>
+                {plans.map((plan) => (
+                  <div key={plan.id} className="text-center font-medium">
+                    {plan.name}
+                  </div>
+                ))}
+
+                {Object.entries(featureComparison).map(([feature, values]) => (
+                  <React.Fragment key={feature}>
+                    <div className="py-2">{feature}</div>
+                    {values.map((value, index) => (
+                      <div key={`${feature}-${index}`} className="text-center py-2">
+                        {value === "✅" ? (
+                          <Check className="h-4 w-4 text-green-500 mx-auto" />
+                        ) : value === "❌" ? (
+                          <X className="h-4 w-4 text-red-500 mx-auto" />
+                        ) : (
+                          <span className="text-muted-foreground">{value}</span>
+                        )}
+                      </div>
+                    ))}
+                  </React.Fragment>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </Section>
+
+      {/* Key Features */}
+      <Section
+        title="Everything You Need"
+        description="Powerful features included in every plan"
+      >
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
+          {features.map((feature, index) => (
+            <Card key={index} className="text-center">
+              <CardContent className="pt-6">
+                <div className="mx-auto mb-4 flex size-12 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                  {feature.icon}
+                </div>
+                <h3 className="text-lg font-semibold mb-2">{feature.title}</h3>
+                <p className="text-muted-foreground text-sm">
+                  {feature.description}
+                </p>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </Section>
+
+      {/* FAQ Section */}
+      <Section
+        title="Frequently Asked Questions"
+        description="Everything you need to know about our pricing"
+      >
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+          {[
+            {
+              question: "Can I change plans anytime?",
+              answer: "Yes, you can upgrade or downgrade your plan at any time. Changes take effect at the next billing cycle."
+            },
+            {
+              question: "What payment methods do you accept?",
+              answer: "We accept all major credit cards including Visa, MasterCard, and American Express."
+            },
+            {
+              question: "Is there a free trial?",
+              answer: "Yes! All paid plans come with a 14-day free trial. No credit card required to start."
+            },
+            {
+              question: "Do you offer refunds?",
+              answer: "We offer a 30-day money-back guarantee for all new subscriptions."
+            },
+            {
+              question: "Can I cancel anytime?",
+              answer: "Yes, you can cancel your subscription at any time. Your access continues until the end of your billing period."
+            },
+            {
+              question: "Do you offer custom plans?",
+              answer: "Yes, we can create custom plans for enterprise customers with specific needs."
+            }
+          ].map((faq, index) => (
+            <Card key={index}>
+              <CardContent className="pt-6">
+                <h3 className="text-lg font-semibold mb-2">{faq.question}</h3>
+                <p className="text-muted-foreground text-sm">{faq.answer}</p>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </Section>
+
+      {/* CTA Section */}
+      <Section>
+        <div className="text-center bg-gradient-to-r from-primary/10 to-primary/5 rounded-2xl p-8 md:p-12">
+          <h2 className="text-3xl font-bold tracking-tight">
+            Still have questions?
+          </h2>
+          <p className="mt-4 text-lg text-muted-foreground max-w-2xl mx-auto">
+            Our team is here to help you choose the right plan for your needs.
+            Get in touch and we'll be happy to assist you.
           </p>
+          <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:justify-center">
+            <a
+              href={`mailto:${site.email}?subject=Pricing Inquiry`}
+              className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2"
+            >
+              Email Sales
+            </a>
+            <a
+              href="/contact"
+              className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2"
+            >
+              Contact Us
+            </a>
+          </div>
         </div>
-      </div>
+      </Section>
     </div>
   );
 }

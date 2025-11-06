@@ -34,13 +34,25 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Test files with sensitive data (DO NOT COMMIT)
+test-*.js
+*-test.*
+debug-*.js
+
 # Dependencies
 node_modules/
 
 # Next.js
-/.next/
-/out/
+.next/
+out/
 next-env.d.ts
+
+# Testing
+coverage/
+playwright-report/
+
+# Rollback backups
+.rollback-backups/
 
 # Build outputs
 /dist/

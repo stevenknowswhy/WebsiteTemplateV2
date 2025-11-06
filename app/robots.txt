@@ -1,0 +1,206 @@
+# DataBuildDirect - Sovereign Infrastructure Platform
+# Robots.txt for enhanced SEO and crawling control
+
+# Crawl-delay configuration to respect server resources
+Crawl-delay: 1
+
+# Allow all user agents
+User-agent: *
+Allow: /
+
+# Allow search engine crawlers
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Slurp
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
+
+User-agent: Baiduspider
+Allow: /
+
+User-agent: YandexBot
+Allow: /
+
+# Disallow sensitive and internal paths
+Disallow: /api/
+Disallow: /_not-found
+Disallow: /auth/
+Disallow: /dashboard/
+Disallow: /test-error
+Disallow: /theme-test
+Disallow: /performance
+Disallow: /dashboard-privacy
+
+# Disallow development and testing paths
+Disallow: /api/auth/
+Disallow: /api/dsr/
+Disallow: /api/stripe/
+Disallow: /api/webhooks/
+Disallow: /api/health
+Disallow: /api/live
+Disallow: /api/ready
+
+# Disallow admin and management paths
+Disallow: /admin/
+Disallow: /management/
+Disallow: /internal/
+Disallow: /config/
+Disallow: /debug/
+
+# Disallow parameter-based duplicate content
+Disallow: /*?*
+Disallow: /*&*
+Disallow: /*#*
+Disallow: /*.json$
+Disallow: /*.xml$
+
+# Allow specific important file types
+Allow: /sitemap.xml
+Allow: /*.pdf$
+Allow: /*.zip$
+Allow: /*.png$
+Allow: /*.jpg$
+Allow: /*.jpeg$
+Allow: /*.svg$
+Allow: /*.webp$
+
+# Sitemap locations
+Sitemap: https://databuilddirect.com/sitemap.xml
+
+# Additional SEO hints for search engines
+# Crawl budget optimization
+User-agent: Googlebot
+Crawl-delay: 2
+Request-rate: 1/1s
+
+# Enhanced security bot restrictions
+User-agent: *
+Disallow: /.env$
+Disallow: /.env.local$
+Disallow: /.env.example$
+Disallow: /*.env*
+Disallow: /node_modules/
+Disallow: /dist/
+Disallow: /build/
+Disallow: /.git/
+Disallow: /.github/
+Disallow: /*.git*
+Disallow: /*.log$
+Disallow: /*.tmp$
+
+# Allow content directories
+Allow: /content/
+Allow: /images/
+Allow: /assets/
+Allow: /public/
+
+# Priority crawling for 3-pillar ecosystem pages
+User-agent: Googlebot
+Allow: /underground
+Allow: /micro-dcaas
+Allow: /city-safe-nodes
+Allow: /solutions
+
+# Enhanced crawling for high-value content
+User-agent: Bingbot
+Allow: /content/underground/
+Allow: /content/micro-dcaas/
+Allow: /content/city-safe-nodes/
+Allow: /content/security/
+
+# PDF and resource crawling
+User-agent: Googlebot
+Allow: /*.pdf$
+Crawl-delay: 3
+
+# Image optimization
+User-agent: Googlebot-Image
+Allow: /images/
+Allow: /content/
+Disallow: /api/
+
+# Mobile-first crawling hints
+User-agent: Googlebot-Mobile
+Allow: /
+Crawl-delay: 1
+
+# Social media and specific crawlers
+User-agent: Twitterbot
+Allow: /
+
+User-agent: facebookexternalhit
+Allow: /
+
+User-agent: LinkedInBot
+Allow: /
+
+User-agent: WhatsApp
+Allow: /
+
+# Analytics and monitoring bots (disallowed)
+User-agent: DotBot
+Disallow: /
+
+User-agent: SemrushBot
+Disallow: /
+
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: BLEXBot
+Disallow: /
+
+# Archive and research bots (controlled)
+User-agent: ia_archiver
+Crawl-delay: 10
+Allow: /
+
+User-agent: archive.org_bot
+Crawl-delay: 10
+Allow: /
+
+# Security-focused restrictions
+User-agent: Nuclei
+Disallow: /
+
+User-agent: Nikto
+Disallow: /
+
+User-agent: sqlmap
+Disallow: /
+
+User-agent: w3af
+Disallow: /
+
+# Enhanced privacy protection
+Disallow: /private/
+Disallow: /internal/
+Disallow: /confidential/
+Disallow: /restricted/
+Disallow: /classified/
+
+# Rate limiting for aggressive crawlers
+User-agent: *
+Crawl-delay: 1
+
+# Specific instructions for major search engines
+User-agent: Googlebot
+Disallow: /search
+Allow: /search?*
+
+User-agent: Bingbot
+Disallow: /search
+Allow: /search?*
+
+# Emergency contact page (always allow)
+User-agent: *
+Allow: /contact

@@ -1,0 +1,19 @@
+name: Build (release-tagged)
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      SENTRY_RELEASE: ${{ github.sha }}
+      SENTRY_ENV: production
+      BUILD_TIME: ${{ github.run_started_at }}
+      NEXT_TELEMETRY_DISABLED: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with: { version: 9 }
+      - run: pnpm i --frozen-lockfile
+      - run: pnpm build

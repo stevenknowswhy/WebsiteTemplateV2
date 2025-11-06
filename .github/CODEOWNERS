@@ -1,0 +1,53 @@
+# Global code owners for critical areas
+
+# Security - All security-related changes
+/app/api/**                   @security-owner
+/lib/auth/**                   @security-owner
+/lib/supabase/**              @security-owner
+middleware.ts                    @security-owner
+*.env*                          @security-owner
+
+# Privacy & Compliance - Data handling and legal
+/app/api/dsr/**               @privacy-owner
+/lib/privacy/**               @privacy-owner
+/app/privacy/**                @privacy-owner
+/app/terms/**                  @privacy-owner
+components/consent-**          @privacy-owner
+
+# Accessibility - Frontend accessibility and UX
+/components/**                  @frontend-a11y
+/app/**/page.tsx               @frontend-a11y
+/app/**/layout.tsx             @frontend-a11y
+
+# Architecture - Core architecture decisions
+/lib/**                         @architecture-owner
+/config/**                      @architecture-owner
+supabase/migrations/**           @architecture-owner
+next.config.*                  @architecture-owner
+tsconfig.json                  @architecture-owner
+tailwind.config.*               @architecture-owner
+
+# Performance - Performance optimization
+/app/**/*.tsx                  @performance-owner
+/components/**                 @performance-owner
+/public/**                      @performance-owner
+
+# Dependencies - Package management
+package.json                    @devops-owner
+package-lock.json               @devops-owner
+pnpm-lock.yaml                 @devops-owner
+
+# DevOps/Infrastructure - Deployment and CI/CD
+.github/workflows/**            @devops-owner
+.docker/**                      @devops-owner
+*.dockerfile                   @devops-owner
+
+# Testing - All test files
+test/**                         @qa-owner
+**/*.test.*                    @qa-owner
+**/*.spec.*                    @qa-owner
+
+# Documentation - All documentation
+docs/**                         @documentation-owner
+README.md                      @documentation-owner
+**/*.md                         @documentation-owner

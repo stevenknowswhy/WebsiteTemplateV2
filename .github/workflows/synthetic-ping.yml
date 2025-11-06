@@ -1,0 +1,18 @@
+name: Synthetic Ping (staging)
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "*/10 * * * *"  # every 10 minutes
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping /api/ready
+        run: |
+          URL="${{ secrets.STAGING_BASE_URL }}/api/ready"
+          code=$(curl -s -o /dev/null -w "%{http_code}" "$URL")
+          if [ "$code" != "200" ]; then
+            echo "Ready check failed with $code"
+            exit 1
+          fi
