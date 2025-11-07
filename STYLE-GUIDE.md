@@ -187,6 +187,10 @@ Add descriptive meta titles (<60 chars) and accessible alt tags for every visual
 ☑ Load < 2 s
 ☑ WCAG 2.2 AA+ compliance verified
 
+### Implementation References
+
+* **Design Tokens:** See [DESIGN-TOKENS.md](./DESIGN-TOKENS.md) for the complete token system including CSS variables, Tailwind presets, and JSON exports for cross-tooling consistency.
+
 ### Governance
 
 Review and update quarterly to stay aligned with design evolution and accessibility standards.
