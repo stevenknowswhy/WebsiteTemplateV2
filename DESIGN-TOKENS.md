@@ -60,7 +60,7 @@ flowchart LR
       "subheading": "'Merriweather', ui-serif, Georgia, serif",
       "body": "Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Apple Color Emoji', 'Segoe UI Emoji'",
       "ui": "Poppins, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue'",
-      "mono": "'Montserrat Subrayada', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace"
+      "mono": "'IBM Plex Mono', 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace"
     },
     "size": { "xs": 12, "sm": 14, "md": 16, "lg": 18, "xl": 20, "2xl": 24, "3xl": 30, "4xl": 36, "5xl": 48 },
     "lineHeight": { "tight": 1.25, "normal": 1.6, "loose": 1.8 },
@@ -230,7 +230,42 @@ flowchart LR
 **Texture helper (optional):**
 
 ```css
-.u-texture-linen { background-image: url('/assets/textures/linen.svg'); background-size: 512px 512px; opacity: 0.12; }
+/* Tokenized texture variables */
+:root {
+  --texture-linen: url('/assets/textures/linen.svg');
+  --texture-alpha: 0.12;
+}
+.u-texture-linen {
+  background-image: var(--texture-linen);
+  opacity: var(--texture-alpha);
+  background-size: 512px 512px;
+}
+```
+
+**Organic utilities (micro-asymmetry + spacing jitter):**
+
+```css
+/* Micro-human offsets (apply sparingly for subtle craftsmanship) */
+.u-tilt-1 { transform: rotate(-0.15deg); }
+.u-tilt-2 { transform: rotate(0.2deg); }
+.u-nudge-y-1 { transform: translateY(-0.5px); }
+.u-nudge-x-1 { transform: translateX(1px); }
+
+/* Jittered spacing for card grids to avoid robotic rows */
+.u-jitter > *:nth-child(2n) { margin-top: 2px; }
+.u-jitter > *:nth-child(3n) { margin-top: 4px; }
+```
+
+**Reduced motion respect:**
+
+```css
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
 ```
 
 ---
@@ -245,6 +280,8 @@ flowchart LR
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   theme: {
+    // Disable default colors so only our tokens are available
+    colors: {}, // nukes defaults, prevents "AI-gloss blue" leaks
     extend: {
       colors: {
         bg: {
@@ -338,6 +375,41 @@ export function PrimaryButton({ children }) {
 
 ---
 
+## 5.5) CI Enforcement & Performance Budgets
+
+**package.json scripts:**
+
+```json
+{
+  "scripts": {
+    "audit:lighthouse": "lighthouse http://localhost:3000 --quiet --chrome-flags='--headless' --only-categories=performance,accessibility,best-practices,seo --budget-path=./budgets.json",
+    "audit:axe": "axe http://localhost:3000 --quiet --exit 1",
+    "audit:tokens": "git diff --exit-code dist/css/variables.css || (echo '❌ Token drift detected'; exit 1)"
+  }
+}
+```
+
+**budgets.json (performance enforcement):**
+
+```json
+[{
+  "path": "/*",
+  "options": {
+    "resourceSizes": [
+      {"resourceType": "script", "budget": 170},
+      {"resourceType": "image", "budget": 300}
+    ],
+    "timings": [
+      {"metric": "interactive", "budget": 3000},
+      {"metric": "first-contentful-paint", "budget": 1500},
+      {"metric": "cumulative-layout-shift", "budget": 0.1}
+    ]
+  }
+}]
+```
+
+---
+
 ## 6) Figma Variables Map (Guidance)
 
 * **Collection:** `Anti‑AI Style System`
@@ -359,6 +431,12 @@ export function PrimaryButton({ children }) {
 * **Images**: Budget < 100 KB per image; set `loading="lazy"` and width/height to prevent CLS.
 * **Fonts**: Self‑host variable fonts; preload `body` and `heading` with `font-display: swap`.
 
+### Image Provenance (Anti-AI Compliance)
+* **Real photography only**: People/hero photography must be real, licensed, and model-released (no AI composites).
+* **No synthetic artifacts**: Prohibit warped hands/eyes, anatomically implausible poses, or AI-generated people.
+* **Rights tracking**: Require EXIF scrub + rights metadata tracking in `/assets/_rights.md`.
+* **Technical requirements**: Compress < 100 KB, WebP/AVIF preferred; include descriptive alt text.
+
 ---
 
 ## 8) Governance
@@ -376,6 +454,17 @@ export function PrimaryButton({ children }) {
 3. Wrap `<html>` with theme class: `"", "dark", or "hc"`.
 4. Use semantic utilities (e.g., `bg-bg-surface`, `text-text-primary`, `border-border-subtle`).
 5. Run Lighthouse + Axe after each component PR.
+
+### Audit Checklist (Anti-AI Compliance)
+
+* At least 2 sections use intentional asymmetry (offset media or staggered card heights)
+* No page contains 3+ identical card rows with identical heights
+* High-contrast mode (.hc) tested for all critical flows (nav, forms, modals)
+* Tailwind default palette disabled; only tokenized colors present
+* Font families match guide (no Roboto/Arial defaults)
+* Load < 2 s (LCP < 1.5s, FID < 100ms, CLS < 0.1)
+* WCAG 2.2 AA+ compliance verified
+* All images have real photography provenance (no AI composites)
 
 ---
 
@@ -409,6 +498,102 @@ export function Hero() {
         </div>
       </div>
     </div>
+  );
+}
+```
+
+## 11) Optional Niceties (Nice → Delightful)
+
+### Asymmetric Grid Helper
+
+```css
+/* Organic grid with intentional variance */
+.grid-asym {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: var(--space-6);
+}
+
+/* Responsive variants */
+@media (max-width: 768px) {
+  .grid-asym {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Three-column asymmetric variant */
+.grid-asym-3 {
+  display: grid;
+  grid-template-columns: 1fr 1.1fr 0.9fr;
+  gap: var(--space-6);
+}
+```
+
+### Advanced Organic Utilities
+
+```css
+/* Subtle container variation */
+.u-container-organic {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--space-6);
+  /* Micro-offset for visual interest */
+  transform: translateX(-1px);
+}
+
+/* Interactive hover states with micro-movement */
+.u-lift-hover:hover {
+  transform: translateY(-1px) rotate(-0.05deg);
+  box-shadow: var(--shadow-md);
+  transition: all var(--dur-fast) var(--ease-out);
+}
+
+/* Reading rhythm optimization */
+.u-reading-rhythm {
+  line-height: var(--lh-normal);
+  /* Prevents orphans in critical copy */
+  text-wrap: pretty;
+}
+
+/* Focus states with teal emphasis */
+.u-focus-teal:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+```
+
+### Component Templates with Anti-AI Patterns
+
+```tsx
+// Asymmetric card layout
+export function AsymmetricCardGrid({ children }) {
+  return (
+    <div className="grid-asym u-jitter">
+      {children}
+    </div>
+  );
+}
+
+// Hero with texture and organic movement
+export function OrganicHero({ title, subtitle, children }) {
+  return (
+    <section className="bg-bg-surface relative overflow-hidden">
+      <div className="absolute inset-0 u-texture-linen pointer-events-none" />
+      <div className="u-container-organic py-20">
+        <div className="max-w-prose">
+          <h1 className="font-heading text-5xl text-text-primary mb-4 u-tilt-1">
+            {title}
+          </h1>
+          <p className="font-body text-lg text-text-secondary u-reading-rhythm">
+            {subtitle}
+          </p>
+          <div className="mt-8">
+            {children}
+          </div>
+        </div>
+      </div>
+    </section>
   );
 }
 ```
