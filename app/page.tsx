@@ -5,35 +5,257 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import Section from "@/components/Section";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Shield, Box, Building2, ArrowRight, Users, Globe, Zap } from "lucide-react";
+import GoogleMap from "@/components/GoogleMap";
+import MapDebug from "@/components/MapDebug";
+import { Shield, MapPin, Building2, ArrowRight, Users, Wifi, Battery, TreePine, Box, Zap, Globe, Sun, Lock, Eye } from "lucide-react";
 
 export const metadata: Metadata = generatePageMetadata(pageMetadata.home as any);
 
 export default function Home() {
   return (
     <div className="min-h-screen">
-      {/* Hero Section */}
+      {/* Hero Section - The Smart Router */}
       <Section
-        kicker="Infrastructure Resilience Platform"
-        title="Three layers. One resilient network."
-        description="From sovereign underground facilities to distributed edge nodes, we deliver compute capacity where traditional data centers can't reach."
+        kicker="Solar-Powered Privacy Infrastructure"
+        title="Building Cities That Protect, Not Pry"
+        description="100% solar-powered smart nodes with zero personal data collection. Privacy by design, transparency by law."
       >
-        <div className="flex flex-col gap-4 sm:flex-row sm:justify-center mt-8">
-          <Button size="lg" className="bg-slate-900 hover:bg-slate-800">
+        {/* Interactive City Map */}
+        <div className="mt-8 mb-8 relative">
+          <div className="bg-gradient-to-br from-slate-100 to-green-50 dark:from-slate-800 dark:to-green-950 rounded-2xl p-6 border border-border/50">
+            <div className="text-center mb-4">
+              <h3 className="text-lg font-semibold text-foreground mb-2">Smart Node Deployments</h3>
+              <p className="text-muted-foreground text-sm">
+                Explore our solar-powered privacy infrastructure across San Francisco
+              </p>
+            </div>
+            <MapDebug
+              address="55 9th Street, San Francisco, CA 94103"
+              lat={37.7749}
+              lng={-122.4194}
+            />
+            <div className="grid grid-cols-2 gap-4 mt-4">
+              <div className="text-center p-3 bg-blue-50 dark:bg-blue-900 rounded-lg">
+                <div className="flex items-center justify-center space-x-2 mb-1">
+                  <Wifi className="h-4 w-4 text-blue-600" />
+                  <span className="text-sm font-medium text-blue-700 dark:text-blue-300">Hello Smart Nodes</span>
+                </div>
+                <p className="text-xs text-blue-600 dark:text-blue-400">Community connectivity hubs</p>
+              </div>
+              <div className="text-center p-3 bg-green-50 dark:bg-green-900 rounded-lg">
+                <div className="flex items-center justify-center space-x-2 mb-1">
+                  <Shield className="h-4 w-4 text-green-600" />
+                  <span className="text-sm font-medium text-green-700 dark:text-green-300">City Safe Nodes</span>
+                </div>
+                <p className="text-xs text-green-600 dark:text-green-400">Critical infrastructure protection</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Privacy & Solar Features */}
+        <div className="grid md:grid-cols-2 gap-6 mb-8">
+          <Card className="p-6 bg-gradient-to-br from-green-50 to-blue-50 dark:from-green-950 dark:to-blue-950 border-green-200 dark:border-green-800">
+            <div className="flex items-center space-x-3 mb-4">
+              <div className="size-12 rounded-lg bg-yellow-100 dark:bg-yellow-900 flex items-center justify-center">
+                <Sun className="h-6 w-6 text-yellow-600 dark:text-yellow-400" />
+              </div>
+              <div>
+                <h3 className="text-xl font-bold text-green-800 dark:text-green-200">100% Solar Powered</h3>
+                <p className="text-sm text-green-600 dark:text-green-400">Clean energy independence</p>
+              </div>
+            </div>
+            <p className="text-gray-700 dark:text-gray-300 mb-4">
+              Every Smart Node operates entirely on solar power with battery backup, ensuring 24/7 operation during grid outages while reducing carbon footprint by 500 tons annually.
+            </p>
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-medium text-green-700 dark:text-green-300">Zero grid dependency</span>
+              <Link href="/privacy#solar-efficiency" className="text-blue-600 hover:text-blue-700 text-sm font-medium">
+                Learn more →
+              </Link>
+            </div>
+          </Card>
+
+          <Card className="p-6 bg-gradient-to-br from-blue-50 to-purple-50 dark:from-blue-950 dark:to-purple-950 border-blue-200 dark:border-blue-800">
+            <div className="flex items-center space-x-3 mb-4">
+              <div className="size-12 rounded-lg bg-purple-100 dark:bg-purple-900 flex items-center justify-center">
+                <Lock className="h-6 w-6 text-purple-600 dark:text-purple-400" />
+              </div>
+              <div>
+                <h3 className="text-xl font-bold text-blue-800 dark:text-blue-200">Zero Personal Data</h3>
+                <p className="text-sm text-blue-600 dark:text-blue-400">Privacy by engineering</p>
+              </div>
+            </div>
+            <p className="text-gray-700 dark:text-gray-300 mb-4">
+              We never collect, store, or process personal information. All data is anonymized at the edge with AES-256 encryption, making privacy our foundation, not a feature.
+            </p>
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-medium text-blue-700 dark:text-blue-300">0 breaches in 5+ years</span>
+              <Link href="/privacy" className="text-blue-600 hover:text-blue-700 text-sm font-medium">
+                Privacy details →
+              </Link>
+            </div>
+          </Card>
+        </div>
+
+        {/* Audience Tiles */}
+        <div className="grid md:grid-cols-3 gap-6 mb-8">
+          <Link href="/for-cities" className="group">
+            <Card className="h-full transition-all hover:shadow-lg hover:border-green-600/20 border-border/50">
+              <CardHeader>
+                <div className="flex items-center space-x-3">
+                  <div className="size-12 rounded-lg bg-green-100 dark:bg-green-900 group-hover:bg-green-200 dark:group-hover:bg-green-800 transition-colors flex items-center justify-center">
+                    <Shield className="h-6 w-6 text-green-600 dark:text-green-400" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold">City Leaders</h3>
+                    <p className="text-sm text-muted-foreground">Transform your urban infrastructure</p>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground mb-4">
+                  Deploy privacy-first smart nodes with zero taxpayer cost. Generate revenue while providing public safety, free Wi-Fi, and environmental monitoring—without compromising resident privacy.
+                </p>
+                <div className="flex items-center space-x-2 mb-4">
+                  <Shield className="h-4 w-4 text-green-600" />
+                  <span className="text-sm text-green-600 font-medium">Zero personal data collected</span>
+                </div>
+                <Button variant="outline" className="w-full group-hover:bg-green-600 group-hover:text-white">
+                  Explore City Solutions
+                </Button>
+              </CardContent>
+            </Card>
+          </Link>
+
+          <Link href="/for-building-owners" className="group">
+            <Card className="h-full transition-all hover:shadow-lg hover:border-blue-600/20 border-border/50">
+              <CardHeader>
+                <div className="flex items-center space-x-3">
+                  <div className="size-12 rounded-lg bg-blue-100 dark:bg-blue-900 group-hover:bg-blue-200 dark:group-hover:bg-blue-800 transition-colors flex items-center justify-center">
+                    <Building2 className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold">Building Owners</h3>
+                    <p className="text-sm text-muted-foreground">Monetize your rooftop space</p>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground mb-4">
+                  Host solar-powered Smart Nodes with zero installation cost. Earn revenue share while getting backup power, 5G connectivity, and edge computing—all with zero personal data processing.
+                </p>
+                <div className="flex items-center space-x-2 mb-4">
+                  <Sun className="h-4 w-4 text-yellow-600" />
+                  <span className="text-sm text-yellow-600 font-medium">Solar-powered with battery backup</span>
+                </div>
+                <Button variant="outline" className="w-full group-hover:bg-blue-600 group-hover:text-white">
+                  Apply to Host Nodes
+                </Button>
+              </CardContent>
+            </Card>
+          </Link>
+
+          <Link href="/investors" className="group">
+            <Card className="h-full transition-all hover:shadow-lg hover:border-slate-600/20 border-border/50">
+              <CardHeader>
+                <div className="flex items-center space-x-3">
+                  <div className="size-12 rounded-lg bg-slate-100 dark:bg-slate-800 group-hover:bg-slate-200 dark:group-hover:bg-slate-700 transition-colors flex items-center justify-center">
+                    <Users className="h-6 w-6 text-slate-600 dark:text-slate-400" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold">Investors</h3>
+                    <p className="text-sm text-muted-foreground">Join the infrastructure revolution</p>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground mb-4">
+                  Invest in the future of urban infrastructure. Dual-product model with strong unit economics and rapid scalability across global markets.
+                </p>
+                <Button variant="outline" className="w-full group-hover:bg-slate-600 group-hover:text-white">
+                  View Investor Deck
+                </Button>
+              </CardContent>
+            </Card>
+          </Link>
+        </div>
+
+        <div className="flex flex-col gap-4 sm:flex-row sm:justify-center">
+          <Button size="lg" className="bg-green-600 hover:bg-green-700">
             <ArrowRight className="h-4 w-4 mr-2" />
-            Explore Solutions
+            Join the Pilot Program
           </Button>
           <Button variant="outline" size="lg">
-            <Users className="h-4 w-4 mr-2" />
-            Contact Our Team
+            <Wifi className="h-4 w-4 mr-2" />
+            Schedule City Demo
           </Button>
         </div>
       </Section>
 
-      {/* 3-Pillar Ecosystem Section */}
+      {/* The Forhem Network 3-Step Explainer */}
       <Section
-        kicker="Our Ecosystem"
-        title="Infrastructure for any challenge"
+        kicker="How It Works"
+        title="The Forhem Network: Node → Data → Impact"
+        description="Three simple steps transform urban spaces into intelligent, connected communities."
+      >
+        <div className="grid md:grid-cols-3 gap-8 mt-12">
+          <div className="text-center">
+            <div className="size-20 rounded-full bg-green-100 dark:bg-green-900 flex items-center justify-center mx-auto mb-4">
+              <MapPin className="h-10 w-10 text-green-600 dark:text-green-400" />
+            </div>
+            <h3 className="text-xl font-bold mb-2">1. Deploy Nodes</h3>
+            <p className="text-muted-foreground">
+              Smart nodes installed on rooftops and city streets provide solar power, 5G connectivity, and edge computing capabilities.
+            </p>
+          </div>
+
+          <div className="text-center">
+            <div className="size-20 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center mx-auto mb-4">
+              <Wifi className="h-10 w-10 text-blue-600 dark:text-blue-400" />
+            </div>
+            <h3 className="text-xl font-bold mb-2">2. Collect Data</h3>
+            <p className="text-muted-foreground">
+              Privacy-first data collection generates insights for traffic management, environmental monitoring, and public safety.
+            </p>
+          </div>
+
+          <div className="text-center">
+            <div className="size-20 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center mx-auto mb-4">
+              <TreePine className="h-10 w-10 text-slate-600 dark:text-slate-400" />
+            </div>
+            <h3 className="text-xl font-bold mb-2">3. Create Impact</h3>
+            <p className="text-muted-foreground">
+              Cities generate revenue, buildings earn income, and communities get better services with zero taxpayer cost.
+            </p>
+          </div>
+        </div>
+      </Section>
+
+      {/* Trust Strip */}
+      <Section
+        kicker="Trusted By Leading Cities"
+        title="Pilot Partners & Early Adopters"
+      >
+        <div className="bg-muted/50 rounded-2xl p-8 mt-8">
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-8 items-center">
+            {/* TODO: Replace with actual pilot partner logos */}
+            {["City of San Francisco", "Seattle DOT", "Portland Smart City", "Oakland Municipal", "San Jose Innovation", "Berkeley Tech"].map((city, index) => (
+              <div key={index} className="text-center">
+                <div className="size-16 bg-white dark:bg-slate-800 rounded-lg flex items-center justify-center mx-auto mb-2 border border-border/50">
+                  <Building2 className="h-8 w-8 text-muted-foreground" />
+                </div>
+                <p className="text-xs text-muted-foreground">{city}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </Section>
+
+      {/* Solutions Overview */}
+      <Section
+        kicker="Our Solutions"
+        title="Two Connected Product Lines, One Unified Network"
       >
         <div className="grid md:grid-cols-3 gap-8 mt-12">
           <Link href="/underground" className="group">
@@ -281,7 +503,7 @@ export default function Home() {
             the perfect solution for your specific requirements.
           </p>
           <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
-            <Button size="lg" className="bg-slate-900 hover:bg-slate-800">
+            <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white">
               <Users className="h-4 w-4 mr-2" />
               Schedule a Consultation
             </Button>

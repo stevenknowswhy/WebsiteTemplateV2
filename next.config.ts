@@ -4,28 +4,26 @@ const withBundleAnalyzer = require("@next/bundle-analyzer")({
   enabled: process.env.ANALYZE === "true",
 });
 
-const mkCsp = (enforce = true) => {
-  // Development needs 'unsafe-inline' for Next.js dev scripts
-  const isDevelopment = process.env.NODE_ENV === "development";
+const isDev = process.env.NODE_ENV !== 'production';
 
-  const directives = [
-    "default-src 'self'",
-    "base-uri 'self'",
-    "frame-ancestors 'none'",
-    "img-src 'self' data: blob:",
-    "font-src 'self' data: https://cdnjs.cloudflare.com https://r2cdn.perplexity.ai https://fonts.googleapis.com https://fonts.gstatic.com https://ka-f.fontawesome.com", // Allow external fonts
-    "style-src 'self' 'unsafe-inline'",
-    `script-src 'self' ${isDevelopment ? "'unsafe-inline' 'unsafe-eval'" : ""}`, // Allow inline in dev only
-    "connect-src 'self' https: wss:",           // Allow websockets
-    "object-src 'none'",
-    "upgrade-insecure-requests"
-  ].filter(directive => directive && directive.trim()); // Remove empty strings
+const scriptSrc = [
+  "'self'",
+  "'unsafe-eval'",               // Next dev/HMR
+  "https://maps.googleapis.com",
+  "https://maps.gstatic.com",
+];
+if (isDev) scriptSrc.push("'unsafe-inline'"); // dev only
 
-  return {
-    key: enforce ? "Content-Security-Policy" : "Content-Security-Policy-Report-Only",
-    value: directives.join("; ")
-  };
-};
+const csp = `
+  default-src 'self';
+  script-src ${scriptSrc.join(' ')};
+  style-src 'self' 'unsafe-inline';
+  img-src 'self' data: https://*.googleapis.com https://*.gstatic.com;
+  connect-src 'self' https://*.googleapis.com https://*.gstatic.com;
+  font-src 'self' https://fonts.gstatic.com data: https://cdnjs.cloudflare.com https://r2cdn.perplexity.ai https://ka-f.fontawesome.com;
+  frame-src 'self' https://*.google.com https://*.gstatic.com;
+  worker-src 'self' blob:;
+`.replace(/\s{2,}/g, ' ').trim();
 
 const securityHeaders = [
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
@@ -33,7 +31,7 @@ const securityHeaders = [
   { key: "X-Frame-Options", value: "DENY" },
   { key: "X-DNS-Prefetch-Control", value: "off" },
   { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(), interest-cohort=()" },
-  mkCsp(true), // switch to false if you need Report-Only during rollout
+  { key: "Content-Security-Policy", value: csp },
   { key: "Strict-Transport-Security", value: "max-age=31536000; includeSubDomains; preload" }
 ];
 
@@ -44,7 +42,7 @@ const base: NextConfig = {
   },
   async headers() {
     return [
-      { source: "/:path*", headers: securityHeaders }
+      { source: "/(.*)", headers: securityHeaders }
     ];
   }
 };

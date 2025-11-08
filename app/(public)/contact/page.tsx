@@ -1,3 +1,5 @@
+"use client";
+
 import Section from "@/components/Section";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -12,26 +14,116 @@ import {
   Clock,
   Shield,
   Globe,
-  Briefcase
+  Briefcase,
+  Heart,
+  Wifi,
+  AlertTriangle,
+  ChevronDown,
+  ChevronUp,
+  MessageSquare,
+  Sun,
+  Lock
 } from "lucide-react";
+import { useState } from "react";
 
 export default function ContactPage() {
+  const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
+  const [selectedInterest, setSelectedInterest] = useState("");
+
+  const faqItems = [
+    {
+      question: "How quickly can Hello Smart Nodes be deployed in our city?",
+      answer: "Our typical deployment timeline is 90 days from initial consultation to full activation. This includes site assessment, permitting, installation, and commissioning. We handle all permitting and regulatory requirements at no cost to the city."
+    },
+    {
+      question: "What are the costs to cities and property owners?",
+      answer: "Zero cost to taxpayers and property owners. Hello Smart Nodes are installed and maintained at no cost through our revenue-sharing model. Cities receive 25% of revenue from node operations, while property owners receive 20-30% based on location and traffic."
+    },
+    {
+      question: "How do Hello Smart Nodes generate revenue?",
+      answer: "Revenue comes from service subscriptions including premium Wi-Fi services, IoT connectivity for businesses, environmental data subscriptions, and edge computing services. All revenue is shared with cities and property owners."
+    },
+    {
+      question: "What data is collected and how is privacy protected?",
+      answer: "We never collect personal data, ever. Our privacy-by-design approach means all data is anonymized at the edge with AES-256 encryption. We only collect aggregate environmental data (air quality, temperature, noise) and anonymized usage metrics. No personal identification data is collected without explicit consent. Learn more about our privacy commitment at forhem.com/privacy"
+    },
+    {
+      question: "How are the nodes powered and maintained?",
+      answer: "Hello Smart Nodes are 100% solar-powered with battery backup providing 48-72 hours of operation during grid outages. We handle all maintenance through quarterly remote checks and annual on-site servicing. Emergency maintenance is available 24/7. The solar design ensures zero grid dependency and clean energy operation."
+    },
+    {
+      question: "What are the requirements for hosting a node?",
+      answer: "Properties need approximately 4' x 6' of rooftop or ground space with good solar exposure. The installation requires about 4-6 hours with minimal disruption. Our team conducts a free site assessment to determine optimal placement."
+    }
+  ];
+
+  const contactOptions = [
+    {
+      icon: <Building2 className="h-8 w-8 text-blue-600" />,
+      title: "City Partnerships",
+      description: "Deploy Hello Smart Nodes and City Safe platforms in your municipality.",
+      contact: "cities@forhempbc.com",
+      phone: "+1 (415) 555-0123",
+      hours: "Mon-Fri, 8AM-6PM PT"
+    },
+    {
+      icon: <Shield className="h-8 w-8 text-green-600" />,
+      title: "Property Owners",
+      description: "Host nodes on your property and earn revenue share with zero installation cost.",
+      contact: "property@forhempbc.com",
+      phone: "+1 (415) 555-0145",
+      hours: "Mon-Fri, 8AM-6PM PT"
+    },
+    {
+      icon: <Heart className="h-8 w-8 text-purple-600" />,
+      title: "Investor Relations",
+      description: "Learn about investment opportunities in our Public Benefit Corporation.",
+      contact: "investors@forhempbc.com",
+      phone: "+1 (415) 555-0167",
+      hours: "Mon-Fri, 9AM-5PM PT"
+    },
+    {
+      icon: <Users className="h-8 w-8 text-orange-600" />,
+      title: "Careers",
+      description: "Join our mission-driven team building infrastructure that serves communities.",
+      contact: "careers@forhempbc.com",
+      phone: "+1 (415) 555-0189",
+      hours: "Mon-Fri, 9AM-5PM PT"
+    },
+    {
+      icon: <FileText className="h-8 w-8 text-cyan-600" />,
+      title: "Media Relations",
+      description: "Press inquiries, interviews, and media asset coordination.",
+      contact: "media@forhempbc.com",
+      phone: "+1 (415) 555-0111",
+      hours: "Mon-Fri, 9AM-6PM PT"
+    },
+    {
+      icon: <AlertTriangle className="h-8 w-8 text-red-600" />,
+      title: "Emergency Support",
+      description: "24/7 support for critical infrastructure and emergency situations.",
+      contact: "emergency@forhempbc.com",
+      phone: "+1 (415) 555-0911",
+      hours: "24/7 Emergency Support"
+    }
+  ];
+
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
       <Section
         kicker="Get In Touch"
-        title="Start building sovereign infrastructure together."
-        description="Whether you're exploring our solutions, seeking partnership opportunities, or ready to deploy resilient infrastructure, our team is standing by to help."
+        title="Transform Your Community with Smart Infrastructure"
+        description="Whether you're a city leader exploring smart deployments, a property owner interested in hosting nodes, or an investor passionate about public benefit, our team is ready to help you get started."
       >
         <div className="flex flex-col gap-4 sm:flex-row sm:justify-center mt-8">
-          <Button size="lg" className="bg-slate-900 hover:bg-slate-800">
-            <Mail className="h-4 w-4 mr-2" />
-            Contact Sales
+          <Button size="lg" className="bg-green-600 hover:bg-green-700">
+            <Wifi className="h-4 w-4 mr-2" />
+            Deploy Hello Smart Nodes
           </Button>
           <Button variant="outline" size="lg">
-            <Users className="h-4 w-4 mr-2" />
-            Schedule a Tour
+            <Heart className="h-4 w-4 mr-2" />
+            Schedule City Demo
           </Button>
         </div>
       </Section>
@@ -39,60 +131,11 @@ export default function ContactPage() {
       {/* Contact Options */}
       <Section
         kicker="How to Reach Us"
-        title="Connect with the right team"
+        title="Connect with the Right Team"
       >
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {[
-            {
-              icon: <Building2 className="h-8 w-8 text-slate-600" />,
-              title: "Sales & Solutions",
-              description: "Discuss your infrastructure requirements and explore how our three-pillar ecosystem can meet your needs.",
-              contact: "sales@databuilddirect.com",
-              phone: "+1 (415) 555-0123",
-              hours: "Mon-Fri, 8AM-6PM PT"
-            },
-            {
-              icon: <Shield className="h-8 w-8 text-red-600" />,
-              title: "Security Team",
-              description: "For security assessments, compliance discussions, and technical security questions.",
-              contact: "security@databuilddirect.com",
-              phone: "+1 (415) 555-0145",
-              hours: "24/7 Emergency Support"
-            },
-            {
-              icon: <Briefcase className="h-8 w-8 text-green-600" />,
-              title: "Investor Relations",
-              description: "Investment opportunities, financial information, and partnership discussions.",
-              contact: "investors@databuilddirect.com",
-              phone: "+1 (415) 555-0167",
-              hours: "Mon-Fri, 9AM-5PM PT"
-            },
-            {
-              icon: <Users className="h-8 w-8 text-blue-600" />,
-              title: "Careers",
-              description: "Career opportunities, recruitment inquiries, and team culture questions.",
-              contact: "careers@databuilddirect.com",
-              phone: "+1 (415) 555-0189",
-              hours: "Mon-Fri, 9AM-5PM PT"
-            },
-            {
-              icon: <FileText className="h-8 w-8 text-purple-600" />,
-              title: "Media Relations",
-              description: "Press inquiries, interview requests, and media asset coordination.",
-              contact: "media@databuilddirect.com",
-              phone: "+1 (415) 555-0111",
-              hours: "Mon-Fri, 9AM-6PM PT"
-            },
-            {
-              icon: <Globe className="h-8 w-8 text-orange-600" />,
-              title: "Partnerships",
-              description: "Technology partnerships, alliance opportunities, and ecosystem integration.",
-              contact: "partners@databuilddirect.com",
-              phone: "+1 (415) 555-0133",
-              hours: "Mon-Fri, 8AM-5PM PT"
-            }
-          ].map((contact, index) => (
-            <Card key={index} className="p-6">
+          {contactOptions.map((contact, index) => (
+            <Card key={index} className="p-6 hover:shadow-lg transition-all">
               <CardHeader className="pb-3">
                 <div className="flex items-center space-x-3">
                   {contact.icon}
@@ -192,13 +235,19 @@ export default function ContactPage() {
         </div>
       </Section>
 
-      {/* Contact Form */}
+      {/* Smart Contact Form */}
       <Section
-        kicker="Quick Contact"
-        title="Send us a message"
+        kicker="Get Started"
+        title="Smart Contact Form"
       >
         <div className="grid lg:grid-cols-2 gap-8">
           <Card className="p-8">
+            <div className="mb-6">
+              <h3 className="text-xl font-bold mb-2">Tell us about your interests</h3>
+              <p className="text-sm text-muted-foreground">
+                We'll route your inquiry to the right team member and respond within 24 hours.
+              </p>
+            </div>
             <form className="space-y-6">
               <div className="grid md:grid-cols-2 gap-4">
                 <div>
@@ -226,7 +275,7 @@ export default function ContactPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-2">Company</label>
+                <label className="block text-sm font-medium mb-2">Organization</label>
                 <input
                   type="text"
                   className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800"
@@ -234,15 +283,21 @@ export default function ContactPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-2">Subject</label>
-                <select className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800">
-                  <option>Sales Inquiry</option>
-                  <option>Technical Question</option>
-                  <option>Partnership Opportunity</option>
-                  <option>Investor Relations</option>
-                  <option>Career Inquiry</option>
-                  <option>Media Request</option>
-                  <option>Other</option>
+                <label className="block text-sm font-medium mb-2">I'm interested in...</label>
+                <select
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800"
+                  value={selectedInterest}
+                  onChange={(e) => setSelectedInterest(e.target.value)}
+                >
+                  <option value="">Select your interest</option>
+                  <option value="city-demo">Scheduling a city demo</option>
+                  <option value="host-node">Hosting Hello Smart Nodes</option>
+                  <option value="investor">Investor information</option>
+                  <option value="partnership">Partnership opportunities</option>
+                  <option value="media">Press and media inquiries</option>
+                  <option value="careers">Career opportunities</option>
+                  <option value="technical">Technical questions</option>
+                  <option value="other">Other inquiries</option>
                 </select>
               </div>
 
@@ -251,55 +306,73 @@ export default function ContactPage() {
                 <textarea
                   rows={4}
                   className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800"
-                  placeholder="Tell us about your infrastructure requirements..."
+                  placeholder="Tell us about your community, property, or specific needs..."
                 />
               </div>
 
-              <Button type="submit" size="lg" className="w-full bg-slate-900 hover:bg-slate-800">
+              <Button type="submit" size="lg" className="w-full bg-green-600 hover:bg-green-700">
+                <MessageSquare className="h-4 w-4 mr-2" />
                 Send Message
               </Button>
             </form>
           </Card>
 
-          <Card className="p-8 bg-gradient-to-br from-slate-50 to-gray-100 dark:from-slate-900 dark:to-gray-800">
+          <Card className="p-8 bg-gradient-to-br from-green-50 to-blue-50 dark:from-green-950 dark:to-blue-950">
             <div className="space-y-6">
               <h3 className="text-xl font-bold">Response Times</h3>
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
-                  <span className="text-sm">Sales Inquiries</span>
-                  <span className="text-sm font-medium">Within 24 hours</span>
+                  <span className="text-sm">City Partnerships</span>
+                  <span className="text-sm font-medium text-green-600">Within 24 hours</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-sm">Technical Support</span>
-                  <span className="text-sm font-medium">Within 4 hours</span>
+                  <span className="text-sm">Property Owners</span>
+                  <span className="text-sm font-medium text-green-600">Within 24 hours</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-sm">Security Emergencies</span>
-                  <span className="text-sm font-medium">Immediate response</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm">Partner Inquiries</span>
-                  <span className="text-sm font-medium">Within 48 hours</span>
+                  <span className="text-sm">Investor Relations</span>
+                  <span className="text-sm font-medium text-green-600">Within 48 hours</span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-sm">Media Requests</span>
-                  <span className="text-sm font-medium">Within 2 hours</span>
+                  <span className="text-sm font-medium text-green-600">Within 2 hours</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm">Emergency Support</span>
+                  <span className="text-sm font-medium text-red-600">Immediate response</span>
                 </div>
               </div>
 
               <div className="border-t pt-6">
-                <h3 className="text-xl font-bold mb-4">Emergency Contact</h3>
-                <div className="bg-red-50 dark:bg-red-900/20 p-4 rounded-lg">
-                  <p className="text-sm font-medium text-red-800 dark:text-red-200 mb-2">
-                    For critical infrastructure emergencies
-                  </p>
-                  <div className="flex items-center space-x-2 text-sm">
-                    <Phone className="h-4 w-4 text-red-600" />
-                    <span className="font-mono">+1 (415) 555-0911</span>
+                <h3 className="text-xl font-bold mb-4">What Happens Next?</h3>
+                <div className="space-y-3">
+                  <div className="flex items-start space-x-3">
+                    <div className="size-6 rounded-full bg-green-600 flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <span className="text-white text-xs font-bold">1</span>
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-sm">Smart Routing</h4>
+                      <p className="text-xs text-muted-foreground">Your inquiry is automatically routed to the right team based on your interests</p>
+                    </div>
                   </div>
-                  <p className="text-xs text-red-600 dark:text-red-400 mt-2">
-                    Available 24/7 for facility emergencies
-                  </p>
+                  <div className="flex items-start space-x-3">
+                    <div className="size-6 rounded-full bg-green-600 flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <span className="text-white text-xs font-bold">2</span>
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-sm">Personalized Response</h4>
+                      <p className="text-xs text-muted-foreground">You'll receive a tailored response with relevant information and next steps</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start space-x-3">
+                    <div className="size-6 rounded-full bg-green-600 flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <span className="text-white text-xs font-bold">3</span>
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-sm">Dedicated Support</h4>
+                      <p className="text-xs text-muted-foreground">A team member will be assigned to guide you through the entire process</p>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -307,47 +380,80 @@ export default function ContactPage() {
         </div>
       </Section>
 
+    {/* FAQ Accordion */}
+      <Section
+        kicker="Frequently Asked Questions"
+        title="Common Questions About Hello Smart Nodes"
+      >
+        <div className="max-w-4xl mx-auto">
+          <div className="space-y-4">
+            {faqItems.map((item, index) => (
+              <Card key={index} className="overflow-hidden">
+                <button
+                  className="w-full p-6 text-left hover:bg-muted/50 transition-colors"
+                  onClick={() => setExpandedFaq(expandedFaq === index ? null : index)}
+                >
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-lg font-semibold">{item.question}</h3>
+                    {expandedFaq === index ? (
+                      <ChevronUp className="h-5 w-5 text-muted-foreground flex-shrink-0" />
+                    ) : (
+                      <ChevronDown className="h-5 w-5 text-muted-foreground flex-shrink-0" />
+                    )}
+                  </div>
+                </button>
+                {expandedFaq === index && (
+                  <div className="px-6 pb-6 pt-0">
+                    <p className="text-muted-foreground leading-relaxed">{item.answer}</p>
+                  </div>
+                )}
+              </Card>
+            ))}
+          </div>
+        </div>
+      </Section>
+
       {/* Quick Links */}
       <Section
         kicker="Resources"
-        title="Quick access"
+        title="Quick Access"
       >
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
           {[
             {
-              title: "Download Resources",
+              title: "Hello Smart Nodes",
               items: [
-                { label: "Product Overview", href: "#" },
-                { label: "Security Brief", href: "#" },
-                { label: "Investor Deck", href: "#" },
-                { label: "Technical Specs", href: "#" }
+                { label: "Technical Specifications", href: "/solutions/hello-smart-node" },
+                { label: "Revenue Calculator", href: "/tools/revenue-calculator" },
+                { label: "Installation Guide", href: "/downloads/property-guide.pdf" },
+                { label: "Privacy Policy", href: "/privacy" }
               ]
             },
             {
-              title: "Explore Solutions",
+              title: "For Cities",
               items: [
-                { label: "Underground Data Centers", href: "/underground" },
-                { label: "Micro DCaaS", href: "/micro-dcaas" },
-                { label: "City Safe Nodes", href: "/city-safe-nodes" },
-                { label: "Security Overview", href: "/security" }
+                { label: "City Pilot Program", href: "/for-cities" },
+                { label: "Impact Report", href: "/downloads/impact-report.pdf" },
+                { label: "Case Studies", href: "/news" },
+                { label: "Safety Features", href: "/solutions/city-safe" }
               ]
             },
             {
               title: "Company Information",
               items: [
-                { label: "Our Mission", href: "/mission" },
-                { label: "Investor Relations", href: "/investors" },
-                { label: "Company Updates", href: "/updates" },
-                { label: "Career Opportunities", href: "/careers" }
+                { label: "Why Forhem PBC?", href: "/why-forhem" },
+                { label: "PBC Charter", href: "/pbc-charter" },
+                { label: "Leadership Team", href: "/why-forhem#leadership" },
+                { label: "News & Insights", href: "/news" }
               ]
             },
             {
-              title: "Support & Services",
+              title: "Support & Resources",
               items: [
-                { label: "Technical Support", href: "#" },
-                { label: "Customer Portal", href: "#" },
-                { label: "Documentation", href: "#" },
-                { label: "Service Status", href: "#" }
+                { label: "Contact Support", href: "/contact" },
+                { label: "Media Kit", href: "/downloads/media-kit.zip" },
+                { label: "Careers", href: "/careers" },
+                { label: "Investor Relations", href: "/investors" }
               ]
             }
           ].map((section, index) => (
@@ -358,7 +464,7 @@ export default function ContactPage() {
                   <li key={i}>
                     <a
                       href={item.href}
-                      className="text-sm text-muted-foreground hover:text-slate-900 dark:hover:text-white transition-colors"
+                      className="text-sm text-muted-foreground hover:text-green-600 dark:hover:text-green-400 transition-colors"
                     >
                       {item.label}
                     </a>
@@ -372,23 +478,24 @@ export default function ContactPage() {
 
       {/* Call to Action */}
       <Section>
-        <Card className="p-8 text-center bg-gradient-to-r from-slate-50 to-gray-100 dark:from-slate-900 dark:to-gray-800">
+        <Card className="p-8 text-center bg-gradient-to-r from-green-50 to-blue-50 dark:from-green-950 dark:to-blue-950">
+          <Heart className="h-16 w-16 text-green-600 mx-auto mb-4" />
           <h2 className="text-3xl font-bold tracking-tight mb-4">
-            Ready to build sovereign infrastructure?
+            Ready to Transform Your Community?
           </h2>
           <p className="text-lg text-muted-foreground mb-6 max-w-2xl mx-auto">
-            Our team of infrastructure specialists is ready to help you design and deploy
-            the perfect solution for your specific requirements. Let's start a conversation
-            about your resilience needs.
+            Join cities and property owners already deploying smart infrastructure that
+            generates revenue, bridges the digital divide, and creates sustainable communities.
+            Let's start building infrastructure that serves people first.
           </p>
           <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
-            <Button size="lg" className="bg-slate-900 hover:bg-slate-800">
-              <Mail className="h-4 w-4 mr-2" />
-              Contact Sales Team
+            <Button size="lg" className="bg-green-600 hover:bg-green-700">
+              <Wifi className="h-4 w-4 mr-2" />
+              Start Your Smart City Journey
             </Button>
             <Button variant="outline" size="lg">
-              <Users className="h-4 w-4 mr-2" />
-              Schedule Facility Tour
+              <Heart className="h-4 w-4 mr-2" />
+              Learn About Our PBC Mission
             </Button>
           </div>
         </Card>
