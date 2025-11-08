@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import Header from "@/components/Header";
+import EnhancedHeader from "@/components/EnhancedHeader";
 import Footer from "@/components/Footer";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ToastProvider } from "@/components/ui/toast-context";
@@ -26,7 +26,7 @@ export default function RootLayout({
         >
           <ToastProvider>
             <AppErrorBoundary>
-              <Header />
+              <EnhancedHeader />
               <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-primary text-primary-foreground px-4 py-2 rounded">
                 Skip to main content
               </a>
