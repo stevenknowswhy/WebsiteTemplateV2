@@ -29,7 +29,7 @@ export default function Home() {
                 Explore our solar-powered privacy infrastructure across San Francisco
               </p>
             </div>
-            <MapDebug
+            <GoogleMap
               address="55 9th Street, San Francisco, CA 94103"
               lat={37.7749}
               lng={-122.4194}
