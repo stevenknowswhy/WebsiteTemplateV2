@@ -151,7 +151,7 @@ const CookieConsent: React.FC<CookieConsentProps> = ({ onConsentChange }) => {
               id="cookie-consent-title"
               className="text-lg font-semibold text-gray-900 mb-2"
               role="heading"
-              aria-level="2"
+              aria-level={2}
             >
               🍪 Cookie Preferences
             </div>

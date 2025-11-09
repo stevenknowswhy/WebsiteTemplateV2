@@ -26,11 +26,11 @@ export default function RootLayout({
         >
           <ToastProvider>
             <AppErrorBoundary>
-              <EnhancedHeader />
-              <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-primary text-primary-foreground px-4 py-2 rounded">
+              <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-primary text-primary-foreground px-4 py-2 rounded z-50">
                 Skip to main content
               </a>
-              <main id="main-content" className="flex-1" tabIndex={-1}>
+              <EnhancedHeader />
+              <main id="main-content" className="flex-1" role="main" tabIndex={-1}>
                 {children}
               </main>
               <Footer />

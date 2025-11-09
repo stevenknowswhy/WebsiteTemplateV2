@@ -263,7 +263,7 @@ export default function EnhancedHeader({ className }: EnhancedHeaderProps) {
             </div>
 
             {/* Desktop Navigation - Placeholder */}
-            <nav className="hidden lg:flex items-center space-x-10">
+            <nav className="hidden lg:flex items-center space-x-10" aria-label="Main navigation">
               {/* Navigation items will be rendered after mount */}
             </nav>
 
@@ -320,8 +320,8 @@ export default function EnhancedHeader({ className }: EnhancedHeaderProps) {
           </div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center space-x-10">
-            {(site.nav as EnhancedNavItem[]).map(renderNavItem)}
+          <nav className="hidden lg:flex items-center space-x-10" aria-label="Main navigation">
+            {(site.nav as unknown as EnhancedNavItem[]).map(renderNavItem)}
           </nav>
 
           {/* Right Side Actions */}
@@ -424,8 +424,8 @@ export default function EnhancedHeader({ className }: EnhancedHeaderProps) {
                 {/* Scrollable content area */}
                 <div className="flex-1 overflow-y-auto">
                   {/* Mobile Navigation Items */}
-                  <nav className="px-6 py-4">
-                    {(site.nav as EnhancedNavItem[]).map(renderMobileNavItem)}
+                  <nav className="px-6 py-4" aria-label="Mobile navigation menu">
+                    {(site.nav as unknown as EnhancedNavItem[]).map(renderMobileNavItem)}
                   </nav>
 
                   {/* Mobile Theme Toggle */}
