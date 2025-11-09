@@ -1,0 +1,296 @@
+{
+  "files_analysis": {
+    "BUGFIX_REPORT.md": {
+      "issues": [],
+      "signals": [
+        {
+          "type": "human_signal",
+          "pattern": "variant",
+          "impact": "positive",
+          "file": "BUGFIX_REPORT.md"
+        }
+      ]
+    },
+    "CHANGES_SUMMARY.md": {
+      "issues": [],
+      "signals": [
+        {
+          "type": "human_signal",
+          "pattern": "variant",
+          "impact": "positive",
+          "file": "CHANGES_SUMMARY.md"
+        }
+      ]
+    },
+    "DESIGN-TOKENS.md": {
+      "issues": [],
+      "signals": [
+        {
+          "type": "human_signal",
+          "pattern": "asymmetric",
+          "impact": "positive",
+          "file": "DESIGN-TOKENS.md"
+        },
+        {
+          "type": "human_signal",
+          "pattern": "organic",
+          "impact": "positive",
+          "file": "DESIGN-TOKENS.md"
+        }
+      ]
+    },
+    "FDCB_ADMIN_DASHBOARD.md": {
+      "issues": [
+        {
+          "type": "generic_naming",
+          "pattern": "generic component names",
+          "count": 2,
+          "severity": "low",
+          "suggestion": "Use semantic, descriptive component names",
+          "file": "FDCB_ADMIN_DASHBOARD.md"
+        }
+      ],
+      "signals": [
+        {
+          "type": "human_signal",
+          "pattern": "authentic",
+          "impact": "positive",
+          "file": "FDCB_ADMIN_DASHBOARD.md"
+        }
+      ]
+    },
+    "FDCB_FORM_VALIDATION_SETUP.md": {
+      "issues": [
+        {
+          "type": "cliche",
+          "pattern": "seamless",
+          "severity": "medium",
+          "suggestion": "Replace 'seamless' with specific evidence or metrics",
+          "file": "FDCB_FORM_VALIDATION_SETUP.md"
+        }
+      ],
+      "signals": [
+        {
+          "type": "human_signal",
+          "pattern": "variant",
+          "impact": "positive",
+          "file": "FDCB_FORM_VALIDATION_SETUP.md"
+        }
+      ]
+    },
+    "FDCB_IMPLEMENTATION_BLUEPRINT.md": {
+      "issues": [
+        {
+          "type": "generic_naming",
+          "pattern": "generic component names",
+          "count": 3,
+          "severity": "low",
+          "suggestion": "Use semantic, descriptive component names",
+          "file": "FDCB_IMPLEMENTATION_BLUEPRINT.md"
+        }
+      ],
+      "signals": [
+        {
+          "type": "human_signal",
+          "pattern": "authentic",
+          "impact": "positive",
+          "file": "FDCB_IMPLEMENTATION_BLUEPRINT.md"
+        }
+      ]
+    },
+    "FDCB_SHADCN_THEME_SETUP.md": {
+      "issues": [
+        {
+          "type": "cliche",
+          "pattern": "seamless",
+          "severity": "medium",
+          "suggestion": "Replace 'seamless' with specific evidence or metrics",
+          "file": "FDCB_SHADCN_THEME_SETUP.md"
+        },
+        {
+          "type": "generic_naming",
+          "pattern": "generic component names",
+          "count": 1,
+          "severity": "low",
+          "suggestion": "Use semantic, descriptive component names",
+          "file": "FDCB_SHADCN_THEME_SETUP.md"
+        }
+      ],
+      "signals": [
+        {
+          "type": "human_signal",
+          "pattern": "variant",
+          "impact": "positive",
+          "file": "FDCB_SHADCN_THEME_SETUP.md"
+        }
+      ]
+    },
+    "FDCB_SUPABASE_BACKEND_SETUP.md": {
+      "issues": [
+        {
+          "type": "generic_naming",
+          "pattern": "generic component names",
+          "count": 1,
+          "severity": "low",
+          "suggestion": "Use semantic, descriptive component names",
+          "file": "FDCB_SUPABASE_BACKEND_SETUP.md"
+        }
+      ],
+      "signals": [
+        {
+          "type": "human_signal",
+          "pattern": "authentic",
+          "impact": "positive",
+          "file": "FDCB_SUPABASE_BACKEND_SETUP.md"
+        }
+      ]
+    },
+    "FDCB_TRANSFORMATION_ROADMAP.md": {
+      "issues": [],
+      "signals": [
+        {
+          "type": "human_signal",
+          "pattern": "authentic",
+          "impact": "positive",
+          "file": "FDCB_TRANSFORMATION_ROADMAP.md"
+        }
+      ]
+    },
+    "IMPLEMENTATION_SUMMARY.md": {
+      "issues": [],
+      "signals": [
+        {
+          "type": "human_signal",
+          "pattern": "authentic",
+          "impact": "positive",
+          "file": "IMPLEMENTATION_SUMMARY.md"
+        }
+      ]
+    },
+    "PAYMENTS.md": {
+      "issues": [],
+      "signals": [
+        {
+          "type": "human_signal",
+          "pattern": "unique",
+          "impact": "positive",
+          "file": "PAYMENTS.md"
+        },
+        {
+          "type": "human_signal",
+          "pattern": "authentic",
+          "impact": "positive",
+          "file": "PAYMENTS.md"
+        }
+      ]
+    },
+    "README.md": {
+      "issues": [],
+      "signals": [
+        {
+          "type": "human_signal",
+          "pattern": "authentic",
+          "impact": "positive",
+          "file": "README.md"
+        }
+      ]
+    },
+    "STRIPE_SETUP.md": {
+      "issues": [],
+      "signals": [
+        {
+          "type": "human_signal",
+          "pattern": "authentic",
+          "impact": "positive",
+          "file": "STRIPE_SETUP.md"
+        }
+      ]
+    },
+    "STYLE-GUIDE.md": {
+      "issues": [],
+      "signals": [
+        {
+          "type": "human_signal",
+          "pattern": "asymmetric",
+          "impact": "positive",
+          "file": "STYLE-GUIDE.md"
+        },
+        {
+          "type": "human_signal",
+          "pattern": "handcrafted",
+          "impact": "positive",
+          "file": "STYLE-GUIDE.md"
+        },
+        {
+          "type": "human_signal",
+          "pattern": "bespoke",
+          "impact": "positive",
+          "file": "STYLE-GUIDE.md"
+        },
+        {
+          "type": "human_signal",
+          "pattern": "unique",
+          "impact": "positive",
+          "file": "STYLE-GUIDE.md"
+        },
+        {
+          "type": "human_signal",
+          "pattern": "authentic",
+          "impact": "positive",
+          "file": "STYLE-GUIDE.md"
+        },
+        {
+          "type": "human_signal",
+          "pattern": "genuine",
+          "impact": "positive",
+          "file": "STYLE-GUIDE.md"
+        }
+      ]
+    },
+    "codebase_artisan_report.md": {
+      "issues": [
+        {
+          "type": "cliche",
+          "pattern": "seamless",
+          "severity": "medium",
+          "suggestion": "Replace 'seamless' with specific evidence or metrics",
+          "file": "codebase_artisan_report.md"
+        }
+      ],
+      "signals": [
+        {
+          "type": "human_signal",
+          "pattern": "variant",
+          "impact": "positive",
+          "file": "codebase_artisan_report.md"
+        },
+        {
+          "type": "human_signal",
+          "pattern": "asymmetric",
+          "impact": "positive",
+          "file": "codebase_artisan_report.md"
+        },
+        {
+          "type": "human_signal",
+          "pattern": "organic",
+          "impact": "positive",
+          "file": "codebase_artisan_report.md"
+        },
+        {
+          "type": "human_signal",
+          "pattern": "authentic",
+          "impact": "positive",
+          "file": "codebase_artisan_report.md"
+        }
+      ]
+    }
+  },
+  "repo_signals": {
+    "author_entropy": 0.0,
+    "commit_cadence": "unknown",
+    "documentation_quality": "medium",
+    "human_score": 1.5
+  },
+  "score": 94.5,
+  "status": "pass"
+}
