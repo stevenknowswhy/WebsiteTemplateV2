@@ -88,7 +88,7 @@
     "analytics:verify": "node scripts/verify-analytics.js",
     "verify": "bash verify.sh",
     "verify:quick": "bash verify.sh --quick",
-    "verify:e2e": "npx playwright test tests/console.spec.ts --project=chromium",
+    "verify:e2e": "npx playwright test tests/e2e/console.spec.ts --project=chromium",
     "db:setup": "node scripts/database-migrations-setup.js",
     "db:migration:run": "node scripts/migrations/run-migration.js",
     "db:backup:create": "node scripts/migrations/create-backup.js",
