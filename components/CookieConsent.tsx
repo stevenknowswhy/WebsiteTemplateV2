@@ -147,12 +147,14 @@ const CookieConsent: React.FC<CookieConsentProps> = ({ onConsentChange }) => {
         <div className="flex flex-col lg:flex-row lg:items-start lg:space-x-8 space-y-4 lg:space-y-0">
           {/* Main Content */}
           <div className="flex-1">
-            <h3
+            <div
               id="cookie-consent-title"
               className="text-lg font-semibold text-gray-900 mb-2"
+              role="heading"
+              aria-level="2"
             >
               🍪 Cookie Preferences
-            </h3>
+            </div>
             <p className="text-sm text-gray-600 mb-4">
               We use cookies and similar technologies to help personalize content, tailor and measure
               ads, and provide a better experience. By clicking accept, you agree to this, as outlined

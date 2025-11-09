@@ -180,7 +180,7 @@ export default function PBCCharterPage() {
               <Lock className="h-12 w-12 text-purple-600" />
             </div>
             <h2 className="text-3xl font-bold mb-4">Privacy First. Transparency Always.</h2>
-            <h3 className="text-2xl font-semibold text-blue-700 dark:text-blue-300 mb-4">How Forhem Builds Trust You Can Verify</h3>
+            <div className="text-2xl font-semibold text-blue-700 dark:text-blue-300 mb-4">How Forhem Builds Trust You Can Verify</div>
             <p className="text-lg text-gray-600 dark:text-gray-400 max-w-4xl mx-auto">
               We don't ask you to trust us. We design our systems so you can verify everything —
               from the code that runs our nodes to the dollars that flow back into your city.

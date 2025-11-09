@@ -10,7 +10,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 gap-8 md:grid-cols-5">
           {/* Company */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold">{site.name}</h3>
+            <div className="text-lg font-semibold">{site.name}</div>
             <p className="text-sm text-muted-foreground">
               {site.description}
             </p>
@@ -27,7 +27,7 @@ export default function Footer() {
           {/* Footer Columns */}
           {site.footer.columns.map((column, index) => (
             <div key={column.title} className="space-y-4">
-              <h4 className="text-sm font-semibold">{column.title}</h4>
+              <div className="text-sm font-semibold">{column.title}</div>
               <ul className="space-y-2 text-sm">
                 {column.links.map((link) => (
                   <li key={link.href}>

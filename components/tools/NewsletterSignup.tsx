@@ -115,7 +115,7 @@ export default function NewsletterSignup() {
             <CheckCircle className="h-8 w-8 text-green-600" />
           </div>
           <div>
-            <h3 className="text-xl font-semibold mb-2">Welcome to the Forhem Network!</h3>
+            <div className="text-xl font-semibold mb-2">Welcome to the Forhem Network!</div>
             <p className="text-muted-foreground mb-4">
               You're now subscribed to receive updates about smart city innovation and public benefit initiatives.
             </p>

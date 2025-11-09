@@ -10,6 +10,9 @@ const ALLOW_WARN = [
 
 const ALLOW_ERROR = [
   /NEXT_HYDRATION_ERROR/i, // We're looking for hydration errors
+  /Failed to load resource.*401.*Unauthorized/i, // Admin routes require authentication
+  /Failed to fetch users.*Error.*Failed to fetch users/i, // Expected user fetch failure without auth
+  /Error fetching users.*Error.*Failed to fetch users/i, // Alternative user fetch error message
 ];
 
 // Helper: log violations to console with structured output
