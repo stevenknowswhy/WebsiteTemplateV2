@@ -17,10 +17,10 @@ if (isDev) scriptSrc.push("'unsafe-inline'"); // dev only
 const csp = `
   default-src 'self';
   script-src ${scriptSrc.join(' ')};
-  style-src 'self' 'unsafe-inline';
+  style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
   img-src 'self' data: https://*.googleapis.com https://*.gstatic.com;
   connect-src 'self' https://*.googleapis.com https://*.gstatic.com;
-  font-src 'self' https://fonts.gstatic.com data: https://cdnjs.cloudflare.com https://r2cdn.perplexity.ai https://ka-f.fontawesome.com;
+  font-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com data: https://cdnjs.cloudflare.com https://r2cdn.perplexity.ai https://*.perplexity.ai https://ka-f.fontawesome.com;
   frame-src 'self' https://*.google.com https://*.gstatic.com;
   worker-src 'self' blob:;
 `.replace(/\s{2,}/g, ' ').trim();

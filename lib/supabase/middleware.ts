@@ -1,6 +1,7 @@
 /**
- * Supabase Client for Middleware
- * Use this in Next.js middleware to handle auth state
+ * Supabase Client for Middleware (Legacy)
+ * This is maintained for backward compatibility.
+ * The main middleware logic is now in root middleware.ts
  */
 
 import { createServerClient } from '@supabase/ssr';

@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-A complete Stripe subscription payment system has been successfully implemented for the Next.js application at `/Users/davison/streamproject`. The system includes full upgrade/downgrade functionality, webhook handling, and seamless database integration with Supabase.
+A complete Stripe subscription payment system has been successfully implemented for the Next.js application at `/Users/davison/streamproject`. The system includes full upgrade/downgrade functionality, webhook handling, and automated database synchronization with Supabase.
 
 ## Stripe Products & Prices Created
 

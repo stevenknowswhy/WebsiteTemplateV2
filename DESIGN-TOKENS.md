@@ -11,7 +11,7 @@
 * **Primitives**: Raw, stable brand values (e.g., `color.primary`, `font.family.body`). Change only with council approval—these are your unchanging core.
 * **Semantics**: Intent-driven tokens (e.g., `surface.card`, `text.muted`, `action.primary.bg`). Theme-adaptive for light/dark/high-contrast; refactor-free swaps keep components evergreen.
 * **Human Sparks**: Anti-AI infusions like asymmetry offsets and texture helpers to dodge robotic perfection.
-* **Outputs**: CSS Variables (runtime theming), Tailwind preset, JSON (Style Dictionary), and Figma mappings for seamless handoffs.
+* **Outputs**: CSS Variables (runtime theming), Tailwind preset, JSON (Style Dictionary), and Figma mappings for consistent cross-tool integration.
 
 ```mermaid
 flowchart TD

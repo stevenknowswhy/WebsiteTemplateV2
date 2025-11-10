@@ -1,0 +1,42 @@
+# Framework defaults that signal AI-generated code
+framework_defaults:
+  tailwind:
+    # Very long utility class strings suggest AI generation
+    burst_threshold: 15
+    suspicious_patterns:
+      - "bg-gray-50" # Default gray backgrounds
+      - "space-y-4"  # Generic spacing
+      - "rounded-lg" # Default border radius
+      - "shadow-md"  # Default shadow
+
+  react:
+    generic_patterns:
+      - "export default function" # Default component export
+      - "const [count, setCount] = useState(0)" # Tutorial counter
+      - "className=\"container\"" # Bootstrap-style container
+
+  html:
+    semantic_gaps:
+      - "<div>"  # Overuse of divs instead of semantic tags
+      - "placeholder" # Generic placeholder text
+
+# Human craftsmanship signals
+human_signals:
+  a11y:
+    - "aria-"
+    - "role="
+    - "alt="
+    - "tabindex"
+
+  custom_tokens:
+    - "--color-primary"
+    - "--surface-elevation"
+    - "--asym-offset"
+    - "--texture-grain"
+
+  microcopy:
+    - "Let's"
+    - "We'll help"
+    - "Secure"
+    - "Trusted"
+    - "Verified"

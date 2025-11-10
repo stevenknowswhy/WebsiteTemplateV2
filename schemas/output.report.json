@@ -1,0 +1,10 @@
+{
+  "type": "object",
+  "required": ["report", "score", "status"],
+  "properties": {
+    "report": { "type": "string" },
+    "score": { "type": "number", "minimum": 0, "maximum": 100 },
+    "status": { "type": "string", "enum": ["pass", "warn", "fail"] },
+    "config_hash": { "type": "string" }
+  }
+}

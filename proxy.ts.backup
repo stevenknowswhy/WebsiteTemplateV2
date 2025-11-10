@@ -1,0 +1,249 @@
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
+import { createServerClient } from '@supabase/ssr';
+import type { Database } from '@/types/database';
+
+const PUBLIC_PATHS = new Set([
+  "/",
+  "/pricing",
+  "/privacy",
+  "/terms",
+  "/api/health",
+  "/api/ready",
+  "/api/webhooks/stripe",
+  "/favicon.ico"
+]);
+
+const DASHBOARD_ROUTES = ['/dashboard'];
+const ADMIN_ROUTES = ['/admin'];
+const AUTH_ROUTES = ['/auth/login', '/auth/signup', '/auth/error'];
+
+// Define admin role hierarchy
+const ADMIN_ROLES = ['superadmin', 'city_admin', 'operator', 'analyst', 'partner_viewer'] as const;
+type AdminRole = typeof ADMIN_ROLES[number];
+
+async function getUserTenantContext(supabase: any, userId: string): Promise<{
+  tenant_id: string | null;
+  role: AdminRole | null;
+  tenant_name: string | null;
+} | null> {
+  try {
+    const { data: tenantUser, error } = await supabase
+      .from('tenant_users')
+      .select(`
+        tenant_id,
+        role,
+        tenants(name)
+      `)
+      .eq('user_id', userId)
+      .eq('status', 'active')
+      .single();
+
+    if (error || !tenantUser) {
+      return null;
+    }
+
+    return {
+      tenant_id: tenantUser.tenant_id,
+      role: tenantUser.role as AdminRole,
+      tenant_name: tenantUser.tenants?.name || null,
+    };
+  } catch (error) {
+    console.error('Error getting user tenant context:', error);
+    return null;
+  }
+}
+
+async function enrichJWTWithTenantClaims(supabase: any, userId: string) {
+  const tenantContext = await getUserTenantContext(supabase, userId);
+
+  if (!tenantContext) {
+    return null;
+  }
+
+  // Update user metadata with tenant claims
+  const { error } = await supabase.auth.updateUser({
+    data: {
+      tenant_id: tenantContext.tenant_id,
+      role: tenantContext.role,
+      tenant_name: tenantContext.tenant_name,
+    }
+  });
+
+  if (error) {
+    console.error('Error updating user metadata with tenant claims:', error);
+    return null;
+  }
+
+  return tenantContext;
+}
+
+function redirectToLogin(request: NextRequest): NextResponse {
+  const url = request.nextUrl.clone();
+  url.pathname = '/auth/login';
+  url.searchParams.set('redirectTo', request.nextUrl.pathname);
+  return NextResponse.redirect(url);
+}
+
+function redirectToDashboard(request: NextRequest): NextResponse {
+  const url = request.nextUrl.clone();
+  url.pathname = '/dashboard';
+  return NextResponse.redirect(url);
+}
+
+function createUnauthorizedResponse(request: NextRequest): NextResponse {
+  const url = request.nextUrl.clone();
+  url.pathname = '/auth/error';
+  url.searchParams.set('error', 'unauthorized');
+  return NextResponse.redirect(url);
+}
+
+export async function proxy(req: NextRequest) {
+  const { pathname } = req.nextUrl;
+
+  // Static files & public paths
+  if (pathname.startsWith("/_next") || pathname.startsWith("/static")) {
+    return NextResponse.next();
+  }
+  if ([...PUBLIC_PATHS].some(p => pathname === p || pathname.startsWith(p + "/"))) {
+    return ensureRequestId(req, withSecurityHeaders(NextResponse.next()));
+  }
+
+  // Handle admin authentication
+  let supabaseResponse = NextResponse.next();
+
+  const supabase = createServerClient<Database>(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return req.cookies.getAll();
+        },
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value, options }) =>
+            req.cookies.set(name, value)
+          );
+          supabaseResponse = NextResponse.next();
+          cookiesToSet.forEach(({ name, value, options }) =>
+            supabaseResponse.cookies.set(name, value, options)
+          );
+        },
+      },
+    }
+  );
+
+  // Get user from JWT
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser();
+
+  // Handle unauthenticated users
+  if (!user || authError) {
+    // Redirect authenticated users away from auth pages
+    if (AUTH_ROUTES.some(route => pathname.startsWith(route))) {
+      return ensureRequestId(req, withSecurityHeaders(redirectToDashboard(req)));
+    }
+
+    // Protect dashboard and admin routes
+    if (DASHBOARD_ROUTES.some(route => pathname.startsWith(route)) ||
+        ADMIN_ROUTES.some(route => pathname.startsWith(route))) {
+      return ensureRequestId(req, withSecurityHeaders(redirectToLogin(req)));
+    }
+
+    return ensureRequestId(req, withSecurityHeaders(supabaseResponse));
+  }
+
+  // At this point, user is authenticated
+  const userMetadata = user.user_metadata || {};
+  let tenantContext = {
+    tenant_id: userMetadata.tenant_id,
+    role: userMetadata.role as AdminRole,
+    tenant_name: userMetadata.tenant_name,
+  };
+
+  // Check if we need to enrich JWT with tenant claims
+  if (!tenantContext.tenant_id || !tenantContext.role) {
+    const enrichedContext = await enrichJWTWithTenantClaims(supabase, user.id);
+    if (enrichedContext) {
+      tenantContext = enrichedContext as any;
+
+      // Set the claims in the response headers for client-side access
+      if (enrichedContext.tenant_id) {
+        supabaseResponse.headers.set('x-tenant-id', enrichedContext.tenant_id);
+      }
+      if (enrichedContext.role) {
+        supabaseResponse.headers.set('x-user-role', enrichedContext.role);
+      }
+      supabaseResponse.headers.set('x-tenant-name', enrichedContext.tenant_name || '');
+    } else {
+      // User exists but has no tenant context - this is an error state
+      if (ADMIN_ROUTES.some(route => pathname.startsWith(route))) {
+        return ensureRequestId(req, withSecurityHeaders(createUnauthorizedResponse(req)));
+      }
+    }
+  } else {
+    // Set existing tenant context in response headers
+    supabaseResponse.headers.set('x-tenant-id', tenantContext.tenant_id || '');
+    supabaseResponse.headers.set('x-user-role', tenantContext.role || '');
+    supabaseResponse.headers.set('x-tenant-name', tenantContext.tenant_name || '');
+  }
+
+  // Redirect authenticated users away from auth pages
+  if (AUTH_ROUTES.some(route => pathname.startsWith(route))) {
+    return ensureRequestId(req, withSecurityHeaders(redirectToDashboard(req)));
+  }
+
+  // Protect admin routes based on role
+  if (ADMIN_ROUTES.some(route => pathname.startsWith(route))) {
+    if (!tenantContext.role) {
+      return ensureRequestId(req, withSecurityHeaders(createUnauthorizedResponse(req)));
+    }
+  }
+
+  // Add security headers for admin routes
+  if (ADMIN_ROUTES.some(route => pathname.startsWith(route))) {
+    supabaseResponse.headers.set('X-Frame-Options', 'DENY');
+    supabaseResponse.headers.set('X-Content-Type-Options', 'nosniff');
+    supabaseResponse.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+    supabaseResponse.headers.set(
+      'Content-Security-Policy',
+      "default-src 'self'; script-src 'self' 'unsafe-eval'; style-src 'self' 'unsafe-inline';"
+    );
+  }
+
+  return ensureRequestId(req, withSecurityHeaders(supabaseResponse));
+}
+
+export const config = {
+  matcher: ["/((?!_next|static|.*\\.(?:css|js|png|jpg|jpeg|gif|svg|ico|txt)$).*)"]
+};
+
+// Minimal, safe-by-default headers (CSP now enforcing instead of Report-Only)
+function ensureRequestId(req: NextRequest, res: NextResponse) {
+  const rid = req.headers.get("x-request-id") || crypto.randomUUID();
+  res.headers.set("x-request-id", rid);
+  return res;
+}
+
+function withSecurityHeaders(res: NextResponse) {
+  res.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
+  res.headers.set("X-Content-Type-Options", "nosniff");
+  res.headers.set("X-Frame-Options", "DENY");
+  res.headers.set("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
+  res.headers.set("X-XSS-Protection", "0");
+  res.headers.set(
+    "Content-Security-Policy",
+    [
+      "default-src 'self'",
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://maps.googleapis.com https://maps.gstatic.com",
+      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com",
+      "img-src 'self' data: blob: https://*.googleapis.com https://*.gstatic.com",
+      "connect-src 'self' https: https://maps.googleapis.com https://maps.gstatic.com",
+      "font-src 'self' https://fonts.gstatic.com data: https://cdnjs.cloudflare.com https://r2cdn.perplexity.ai https://*.perplexity.ai https://ka-f.fontawesome.com",
+      "frame-ancestors 'none'"
+    ].join("; ")
+  );
+  return res;
+}

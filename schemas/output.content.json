@@ -1,0 +1,30 @@
+{
+  "type": "object",
+  "required": ["file", "sections"],
+  "properties": {
+    "file": { "type": "string" },
+    "sections": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["text", "span", "score", "flags", "recs", "confidence"],
+        "properties": {
+          "text": { "type": "string" },
+          "span": {
+            "type": "object",
+            "properties": {
+              "start": { "type": "integer" },
+              "end": { "type": "integer" }
+            }
+          },
+          "score": { "type": "number", "minimum": 0, "maximum": 10 },
+          "flags": { "type": "array", "items": { "type": "string" } },
+          "recs": { "type": "array", "items": { "type": "string" } },
+          "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+          "effort": { "type": "string", "enum": ["low", "med", "high"] },
+          "quick_fix": { "type": "string" }
+        }
+      }
+    }
+  }
+}

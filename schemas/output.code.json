@@ -1,0 +1,31 @@
+{
+  "type": "object",
+  "required": ["file", "elements"],
+  "properties": {
+    "file": { "type": "string" },
+    "elements": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["type", "span", "score", "flags", "recs", "confidence"],
+        "properties": {
+          "type": { "type": "string", "enum": ["html", "css", "js", "ts", "jsx", "tsx", "asset"] },
+          "span": {
+            "type": "object",
+            "properties": {
+              "start": { "type": "integer" },
+              "end": { "type": "integer" }
+            }
+          },
+          "content": { "type": "string" },
+          "score": { "type": "number", "minimum": 0, "maximum": 10 },
+          "flags": { "type": "array", "items": { "type": "string" } },
+          "recs": { "type": "array", "items": { "type": "string" } },
+          "confidence": { "type": "number", "minimum": 0, "maximum": 1 },
+          "effort": { "type": "string", "enum": ["low", "med", "high"] },
+          "quick_fix": { "type": "string" }
+        }
+      }
+    }
+  }
+}

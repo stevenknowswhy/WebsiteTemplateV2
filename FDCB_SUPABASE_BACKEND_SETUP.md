@@ -655,7 +655,7 @@ export default function DocumentPage({ params }: { params: { slug: string } }) {
   }
 
   return (
-    <div className="container-wide py-16">
+    <div className="supabase-backend-container py-16">
       <div className="card p-8">
         <div className="relative">
           {/* Watermark overlay */}

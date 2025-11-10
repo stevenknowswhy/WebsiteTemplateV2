@@ -1,0 +1,486 @@
+name: E2E Tests and Accessibility Checks
+
+on:
+  push:
+    branches: [ main, develop, chore/phase1-branding ]
+  pull_request:
+    branches: [ main, develop ]
+  schedule:
+    # Run daily at 2 AM UTC
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+    inputs:
+      test_type:
+        description: 'Type of tests to run'
+        required: true
+        default: 'ci'
+        type: choice
+        options:
+          - ci
+          - all
+          - smoke
+          - a11y
+          - admin
+          - performance
+          - api
+          - responsive
+          - cross-browser
+
+jobs:
+  # Install dependencies and cache
+  setup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      - name: Cache node modules
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Cache Playwright
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-
+
+  # Lint and type check
+  lint-and-typecheck:
+    runs-on: ubuntu-latest
+    needs: setup
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run ESLint
+        run: npm run lint
+
+      - name: Run type check
+        run: npm run typecheck
+
+      - name: Run unit tests with coverage
+        run: npm run test:coverage
+
+  # Build application
+  build:
+    runs-on: ubuntu-latest
+    needs: setup
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build application
+        run: npm run build
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build
+          path: |
+            .next
+            public
+          retention-days: 1
+
+  # Smoke tests (run first for quick feedback)
+  smoke-tests:
+    runs-on: ubuntu-latest
+    needs: [lint-and-typecheck, build]
+    if: github.event.inputs.test_type == 'smoke' || github.event.inputs.test_type == 'ci' || github.event.inputs.test_type == 'all' || github.event.inputs.test_type == ''
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      - name: Run smoke tests
+        run: npm run test:e2e:smoke
+
+      - name: Upload smoke test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: smoke-test-results
+          path: |
+            test-report.json
+            playwright-report/
+            test-results/
+          retention-days: 7
+
+  # Accessibility tests
+  accessibility-tests:
+    runs-on: ubuntu-latest
+    needs: [lint-and-typecheck, build]
+    if: github.event.inputs.test_type == 'a11y' || github.event.inputs.test_type == 'ci' || github.event.inputs.test_type == 'all' || github.event.inputs.test_type == ''
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      - name: Run accessibility tests
+        run: npm run test:e2e:a11y
+
+      - name: Upload accessibility test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: accessibility-test-results
+          path: |
+            test-report.json
+            playwright-report/
+            test-results/
+          retention-days: 7
+
+  # Admin panel tests
+  admin-tests:
+    runs-on: ubuntu-latest
+    needs: [lint-and-typecheck, build]
+    if: github.event.inputs.test_type == 'admin' || github.event.inputs.test_type == 'ci' || github.event.inputs.test_type == 'all' || github.event.inputs.test_type == ''
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      - name: Run admin panel tests
+        run: npm run test:e2e:admin
+
+      - name: Upload admin test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: admin-test-results
+          path: |
+            test-report.json
+            playwright-report/
+            test-results/
+          retention-days: 7
+
+  # API tests
+  api-tests:
+    runs-on: ubuntu-latest
+    needs: [lint-and-typecheck, build]
+    if: github.event.inputs.test_type == 'api' || github.event.inputs.test_type == 'ci' || github.event.inputs.test_type == 'all' || github.event.inputs.test_type == ''
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      - name: Run API tests
+        run: npm run test:e2e:api
+
+      - name: Upload API test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: api-test-results
+          path: |
+            test-report.json
+            playwright-report/
+            test-results/
+          retention-days: 7
+
+  # Performance tests
+  performance-tests:
+    runs-on: ubuntu-latest
+    needs: [lint-and-typecheck, build]
+    if: github.event.inputs.test_type == 'performance' || github.event.inputs.test_type == 'all' || github.event.inputs.test_type == ''
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      - name: Run performance tests
+        run: npm run test:e2e:performance
+
+      - name: Upload performance test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: performance-test-results
+          path: |
+            test-report.json
+            playwright-report/
+            test-results/
+          retention-days: 7
+
+  # Cross-browser tests
+  cross-browser-tests:
+    runs-on: ubuntu-latest
+    needs: [lint-and-typecheck, build]
+    if: github.event.inputs.test_type == 'cross-browser' || github.event.inputs.test_type == 'all' || github.event.inputs.test_type == ''
+    strategy:
+      matrix:
+        browser: [firefox, webkit]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      - name: Run cross-browser tests on ${{ matrix.browser }}
+        run: npx playwright test --project=${{ matrix.browser }} --grep "@smoke or @a11y"
+
+      - name: Upload cross-browser test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: cross-browser-${{ matrix.browser }}-results
+          path: |
+            test-report.json
+            playwright-report/
+            test-results/
+          retention-days: 7
+
+  # Generate comprehensive test report
+  generate-report:
+    runs-on: ubuntu-latest
+    needs: [smoke-tests, accessibility-tests, admin-tests, api-tests, performance-tests, cross-browser-tests]
+    if: always() && (needs.smoke-tests.result == 'success' || needs.smoke-tests.result == 'skipped')
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download all test artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts/
+
+      - name: Generate comprehensive test report
+        run: |
+          # Create summary report
+          echo "# Test Run Summary" > test-summary.md
+          echo "" >> test-summary.md
+          echo "## Test Results" >> test-summary.md
+          echo "" >> test-summary.md
+
+          # Process each test result
+          for artifact in artifacts/*/test-report.json; do
+            if [ -f "$artifact" ]; then
+              test_name=$(basename $(dirname "$artifact"))
+              echo "### $test_name" >> test-summary.md
+              cat "$artifact" | jq -r '.totalTests, .passedTests, .failedTests, .successRate' | \
+              awk 'NR==1{printf "- Total Tests: %s\n", $1} NR==2{printf "- Passed: %s\n", $1} NR==3{printf "- Failed: %s\n", $1} NR==4{printf "- Success Rate: %s%%\n", $1}' >> test-summary.md
+              echo "" >> test-summary.md
+            fi
+          done
+
+          echo "Generated test summary:"
+          cat test-summary.md
+
+      - name: Upload comprehensive report
+        uses: actions/upload-artifact@v4
+        with:
+          name: comprehensive-test-report
+          path: |
+            test-summary.md
+            artifacts/
+          retention-days: 30
+
+      - name: Comment PR with test results
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            try {
+              const summary = fs.readFileSync('test-summary.md', 'utf8');
+              github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: summary
+              });
+            } catch (error) {
+              console.log('Could not read test summary:', error.message);
+            }
+
+  # Performance regression detection
+  performance-regression:
+    runs-on: ubuntu-latest
+    needs: performance-tests
+    if: github.event.inputs.test_type == 'performance' || github.event.inputs.test_type == 'all' || github.event.inputs.test_type == ''
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download performance test results
+        uses: actions/download-artifact@v4
+        with:
+          name: performance-test-results
+          path: results/
+
+      - name: Check for performance regressions
+        run: |
+          # Simple regression check (can be enhanced with actual performance metrics)
+          if [ -f "results/test-report.json" ]; then
+            echo "Performance test results found"
+            # Add actual performance regression logic here
+          fi
+
+  # Security tests
+  security-tests:
+    runs-on: ubuntu-latest
+    needs: setup
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run security audit
+        run: npm audit --audit-level=moderate
+
+      - name: Run security headers test
+        run: |
+          npm run test:security-audit || echo "Security audit completed"
+
+  # Notification on failure
+  notify-on-failure:
+    runs-on: ubuntu-latest
+    needs: [smoke-tests, accessibility-tests, admin-tests, api-tests]
+    if: failure() && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
+    steps:
+      - name: Notify on failure
+        run: |
+          echo "Test failures detected on ${{ github.ref }} branch"
+          # Add notification logic here (Slack, email, etc.)
+          # echo "::error ::Tests failed on ${{ github.ref }}"

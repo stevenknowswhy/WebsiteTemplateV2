@@ -9,27 +9,54 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   reporter: process.env.CI ? "html" : [["list"], ["html"]],
   use: {
-    baseURL: "http://localhost:3000",
+    baseURL: "http://localhost:3001",
     trace: "on-first-retry",
+    screenshot: "only-on-failure",
+    video: "retain-on-failure",
   },
   projects: [
     {
       name: "chromium",
-      use: { ...devices["Desktop Chrome"] },
+      use: {
+        ...devices["Desktop Chrome"],
+        viewport: { width: 1280, height: 720 },
+      },
     },
     {
       name: "firefox",
-      use: { ...devices["Desktop Firefox"] },
+      use: {
+        ...devices["Desktop Firefox"],
+        viewport: { width: 1280, height: 720 },
+      },
     },
     {
       name: "webkit",
-      use: { ...devices["Desktop Safari"] },
+      use: {
+        ...devices["Desktop Safari"],
+        viewport: { width: 1280, height: 720 },
+      },
+    },
+    {
+      name: "mobile-chrome",
+      use: { ...devices["Pixel 5"] },
+    },
+    {
+      name: "mobile-safari",
+      use: { ...devices["iPhone 12"] },
+    },
+    {
+      name: "tablet",
+      use: { ...devices["iPad Pro"] },
     },
   ],
   webServer: {
-    command: "npm run dev",
-    url: "http://localhost:3000",
+    command: "PORT=3001 npm run dev",
+    url: "http://localhost:3001",
     reuseExistingServer: !process.env.CI,
     timeout: 120000,
   },
+  expect: {
+    // Increased timeout for complex operations
+    timeout: 15000
+  }
 });

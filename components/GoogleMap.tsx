@@ -56,7 +56,7 @@ export default function GoogleMap({ address, lat, lng }: GoogleMapProps) {
       label.style.borderRadius = "4px";
       label.style.fontSize = "11px";
       label.style.fontWeight = "600";
-      label.style.color = "#059669";
+      label.style.color = "#064e3b";
       label.style.border = "1px solid #059669";
       label.style.whiteSpace = "nowrap";
       label.style.boxShadow = "0 2px 4px rgba(0,0,0,0.1)";
@@ -204,24 +204,9 @@ export default function GoogleMap({ address, lat, lng }: GoogleMapProps) {
         mapInstance.current = new Map(mapRef.current, {
           center: { lat, lng },
           zoom: 16,
-          mapId: "forhem-map",
-          styles: [
-            {
-              featureType: "all",
-              elementType: "geometry.fill",
-              stylers: [{ color: "#f0f9ff" }]
-            },
-            {
-              featureType: "water",
-              elementType: "geometry",
-              stylers: [{ color: "#0ea5e9" }]
-            },
-            {
-              featureType: "poi.park",
-              elementType: "geometry",
-              stylers: [{ color: "#86efac" }]
-            }
-          ]
+          mapId: "forhem-map"
+          // Note: When mapId is set, styles should not be included in MapOptions
+          // to avoid Google Maps API warnings
         });
 
         console.log("GoogleMap Component: Map instance created successfully");

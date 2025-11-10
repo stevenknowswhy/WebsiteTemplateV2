@@ -1,0 +1,219 @@
+name: Accessibility CI Gates
+
+on:
+  pull_request:
+    branches: [main, chore/phase1-branding]
+  push:
+    branches: [main, chore/phase1-branding]
+
+jobs:
+  accessibility-budget:
+    name: Accessibility Budget Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build application
+        run: npm run build
+
+      - name: Run accessibility tests on changed routes
+        run: |
+          # Get changed files to determine affected routes
+          CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref || 'main' }}..HEAD)
+
+          # Determine which routes to test based on changed files
+          ROUTES_TO_TEST="Homepage"
+          if echo "$CHANGED_FILES" | grep -q "admin"; then
+            ROUTES_TO_TEST="$ROUTES_TO_TEST,User Management"
+          fi
+          if echo "$CHANGED_FILES" | grep -E "(pbc-charter|investors|partners|solutions)"; then
+            ROUTES_TO_TEST="$ROUTES_TO_TEST,PBC Charter,Investors,Partners,Solutions"
+          fi
+
+          echo "Testing routes: $ROUTES_TO_TEST"
+
+          # Run accessibility tests
+          PORT=3002 npx playwright test tests/e2e/console.spec.ts --project=chromium --reporter=json
+
+      - name: Parse accessibility results
+        run: |
+          node -e "
+          const fs = require('fs');
+          const report = JSON.parse(fs.readFileSync('./test-results/results.json', 'utf8'));
+
+          let totalViolations = 0;
+          let newViolations = 0;
+
+          report.suites.forEach(suite => {
+            suite.specs.forEach(spec => {
+              spec.tests.forEach(test => {
+                if (test.results && test.results[0]) {
+                  const violations = test.results[0].violations || [];
+                  totalViolations += violations.length;
+
+                  // Check if this is a new violation (simplified check)
+                  if (violations.length > 0) {
+                    newViolations += violations.length;
+                  }
+                }
+              });
+            });
+          });
+
+          console.log('Total violations:', totalViolations);
+          console.log('New violations:', newViolations);
+
+          // Set environment variables for checks
+          process.env.TOTAL_VIOLATIONS = totalViolations.toString();
+          process.env.NEW_VIOLATIONS = newViolations.toString();
+
+          // Update GitHub step summary
+          console.log('## Accessibility Results Summary');
+          console.log('- Total violations:', totalViolations);
+          console.log('- New violations:', newViolations);
+          console.log('- Budget status:', totalViolations <= 10 ? '✅ PASS' : '❌ FAIL');
+          console.log('- No new violations:', newViolations === 0 ? '✅ PASS' : '❌ FAIL');
+
+          fs.writeFileSync('accessibility-results.json', JSON.stringify({
+            totalViolations,
+            newViolations,
+            withinBudget: totalViolations <= 10,
+            noNewViolations: newViolations === 0
+          }, null, 2));
+          "
+
+      - name: Check accessibility budget
+        run: |
+          # Extract results from previous step
+          TOTAL_VIOLATIONS=$(node -e "console.log(JSON.parse(require('fs').readFileSync('./accessibility-results.json', 'utf8')).totalViolations)")
+          NEW_VIOLATIONS=$(node -e "console.log(JSON.parse(require('fs').readFileSync('./accessibility-results.json', 'utf8')).newViolations)")
+
+          echo "Total violations: $TOTAL_VIOLATIONS"
+          echo "New violations: $NEW_VIOLATIONS"
+
+          # Check budget constraints
+          if [ "$TOTAL_VIOLATIONS" -gt 10 ]; then
+            echo "❌ Accessibility budget exceeded: $TOTAL_VIOLATIONS > 10"
+            exit 1
+          fi
+
+          if [ "$NEW_VIOLATIONS" -gt 0 ]; then
+            echo "❌ New accessibility violations detected: $NEW_VIOLATIONS"
+            exit 1
+          fi
+
+          echo "✅ Accessibility budget checks passed"
+
+      - name: ESLint a11y strict mode
+        run: |
+          # Run ESLint with strict accessibility rules on changed files
+          CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref || 'main' }}..HEAD | grep -E '\.(ts|tsx|js|jsx)$' || true)
+
+          if [ -n "$CHANGED_FILES" ]; then
+            echo "Running accessibility lint on changed files:"
+            echo "$CHANGED_FILES"
+
+            # Install dependencies if not present
+            npm install --save-dev eslint-plugin-jsx-a11y @typescript-eslint/eslint-plugin @typescript-eslint/parser
+
+            # Run ESLint with strict a11y rules
+            npx eslint $CHANGED_FILES \
+              --ext .ts,.tsx,.js,.jsx \
+              --max-warnings 0 || {
+              echo "❌ ESLint accessibility violations found"
+              exit 1
+            }
+          else
+            echo "No TypeScript/JavaScript files changed, skipping ESLint check"
+          fi
+
+      - name: Upload accessibility artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: accessibility-results-${{ github.run_number }}
+          path: |
+            test-results/
+            accessibility-results.json
+          retention-days: 30
+
+  pr-a11y-checklist:
+    name: PR Accessibility Checklist
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    needs: accessibility-budget
+
+    steps:
+      - name: Check PR body for a11y checklist
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data: pr } = await github.rest.pulls.get({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number,
+            });
+
+            const checklistItems = [
+              'headings',
+              'names/roles',
+              'focus',
+              'color contrast',
+              'aria'
+            ];
+
+            const prBody = pr.body || '';
+            const hasChecklist = checklistItems.some(item =>
+              prBody.toLowerCase().includes(item)
+            );
+
+            if (!hasChecklist) {
+              console.log('❌ PR missing accessibility checklist');
+              console.log('Please include an accessibility checklist in your PR description:');
+              console.log('## Accessibility Checklist');
+              console.log('- [ ] Headings: Proper heading structure and order');
+              console.log('- [ ] Names/Roles: All interactive elements have accessible names');
+              console.log('- [ ] Focus: Keyboard navigation and focus management');
+              console.log('- [ ] Color Contrast: WCAG AA compliant contrast ratios');
+              console.log('- [ ] ARIA: Proper ARIA attributes and roles');
+
+              // Comment on PR (optional, requires additional permissions)
+              try {
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: context.issue.number,
+                  body: `⚠️ **Accessibility Checklist Required**
+
+This PR needs an accessibility checklist. Please add the following to your PR description:
+
+## Accessibility Checklist
+- [ ] Headings: Proper heading structure and order
+- [ ] Names/Roles: All interactive elements have accessible names
+- [ ] Focus: Keyboard navigation and focus management
+- [ ] Color Contrast: WCAG AA compliant contrast ratios
+- [ ] ARIA: Proper ARIA attributes and roles
+
+For guidance, see our [Accessibility Guidelines](link-to-docs).`
+                });
+              } catch (error) {
+                console.log('Could not comment on PR (permissions issue)');
+              }
+
+              process.exit(1);
+            }
+
+            console.log('✅ PR includes accessibility checklist');

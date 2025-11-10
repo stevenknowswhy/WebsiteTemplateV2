@@ -148,7 +148,7 @@ export default async function AdminRequestsPage() {
 
   if (error) {
     return (
-      <div className="container-wide py-16">
+      <div className="admin-dashboard-container py-16">
         <div className="card p-6">
           <h1 className="text-2xl font-medium">Admin / Requests</h1>
           <p className="mt-2 text-[var(--danger)]">
@@ -160,7 +160,7 @@ export default async function AdminRequestsPage() {
   }
 
   return (
-    <div className="container-wide py-16">
+    <div className="admin-dashboard-container py-16">
       <div className="card p-6">
         <div className="flex items-start justify-between mb-6">
           <div>

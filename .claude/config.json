@@ -1,0 +1,20 @@
+{
+  "globs": ["app/**/*.{js,ts,tsx,jsx,css,scss,html,md}", "components/**/*.{js,ts,tsx,jsx,css,scss}", "lib/**/*.{js,ts,tsx,jsx}", "*.md"],
+  "exclude": ["**/dist/**", "**/.next/**", "**/node_modules/**", "**/*.min.*", "**/.git/**"],
+  "max_file_bytes": 500000,
+  "timeout_sec_per_agent": 60,
+  "max_parallel": 6,
+  "scoring_weights": {
+    "text_uniqueness": 0.25,
+    "cliche_density": 0.20,
+    "semantic_symmetry": 0.20,
+    "a11y_wins": -0.10,
+    "custom_design_signals": -0.15,
+    "repo_humanity": -0.10
+  },
+  "report_gates": {
+    "fail_above_ai_likeness": 65,
+    "warn_above_ai_likeness": 45
+  },
+  "enable_repo_signals": true
+}

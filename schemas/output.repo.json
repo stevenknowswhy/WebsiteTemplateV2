@@ -1,0 +1,19 @@
+{
+  "type": "object",
+  "required": ["repo"],
+  "properties": {
+    "repo": {
+      "type": "object",
+      "properties": {
+        "author_entropy": { "type": "number" },
+        "commit_cadence": { "type": "string" },
+        "message_variety": { "type": "number" },
+        "has_docs": { "type": "boolean" },
+        "incremental_changes": { "type": "boolean" },
+        "score": { "type": "number", "minimum": 0, "maximum": 10 },
+        "flags": { "type": "array", "items": { "type": "string" } },
+        "notes": { "type": "array", "items": { "type": "string" } }
+      }
+    }
+  }
+}

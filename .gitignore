@@ -63,3 +63,16 @@ playwright-report/
 
 # Misc
 *.tsbuildinfo
+
+# Artifacts and test reports with sensitive data
+.artifacts/
+test-results/console-*/
+
+# Environment files with sensitive data
+.env.backup
+.env.production.template
+.env.template
+.env.example
+
+# Scripts with keys and secrets
+scripts/emergency-key-cleanup.md

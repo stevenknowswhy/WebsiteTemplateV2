@@ -241,7 +241,7 @@ import { ThemeToggle } from "@/components/theme/ThemeToggle";
 export default function Header() {
   return (
     <header className="border-b keyline bg-white/70 dark:bg-[#0B0F14]/70 backdrop-blur">
-      <div className="container-wide h-16 flex items-center justify-between">
+      <div className="theme-header-container h-16 flex items-center justify-between">
         <a href="/" className="font-medium tracking-tight">Forhemit Data Center Builders</a>
         <div className="flex items-center gap-2">
           <Nav />

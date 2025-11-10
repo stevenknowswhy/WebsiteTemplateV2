@@ -13,7 +13,7 @@ export const metadata: Metadata = generatePageMetadata(pageMetadata.home as any)
 
 export default function Home() {
   return (
-    <div className="min-h-screen">
+    <>
       {/* Hero Section - The Smart Router */}
       <Section
         kicker="Solar-Powered Privacy Infrastructure"
@@ -37,17 +37,17 @@ export default function Home() {
             <div className="grid grid-cols-2 gap-4 mt-4">
               <div className="text-center p-3 bg-blue-50 dark:bg-blue-900 rounded-lg">
                 <div className="flex items-center justify-center space-x-2 mb-1">
-                  <Wifi className="h-4 w-4 text-blue-600" />
-                  <span className="text-sm font-medium text-blue-700 dark:text-blue-300">Hello Smart Nodes</span>
+                  <Wifi className="h-4 w-4 text-blue-800" />
+                  <span className="text-sm font-medium text-blue-900 dark:text-blue-200">Hello Smart Nodes</span>
                 </div>
-                <p className="text-xs text-blue-600 dark:text-blue-400">Community connectivity hubs</p>
+                <p className="text-xs text-blue-800 dark:text-blue-300">Community connectivity hubs</p>
               </div>
               <div className="text-center p-3 bg-green-50 dark:bg-green-900 rounded-lg">
                 <div className="flex items-center justify-center space-x-2 mb-1">
-                  <Shield className="h-4 w-4 text-green-600" />
-                  <span className="text-sm font-medium text-green-700 dark:text-green-300">City Safe Nodes</span>
+                  <Shield className="h-4 w-4 text-green-800" />
+                  <span className="text-sm font-medium text-green-900 dark:text-green-200">City Safe Nodes</span>
                 </div>
-                <p className="text-xs text-green-600 dark:text-green-400">Critical infrastructure protection</p>
+                <p className="text-xs text-green-800 dark:text-green-300">Critical infrastructure protection</p>
               </div>
             </div>
           </div>
@@ -58,19 +58,19 @@ export default function Home() {
           <Card className="p-6 bg-gradient-to-br from-green-50 to-blue-50 dark:from-green-950 dark:to-blue-950 border-green-200 dark:border-green-800">
             <div className="flex items-center space-x-3 mb-4">
               <div className="size-12 rounded-lg bg-yellow-100 dark:bg-yellow-900 flex items-center justify-center">
-                <Sun className="h-6 w-6 text-yellow-600 dark:text-yellow-400" />
+                <Sun className="h-6 w-6 text-yellow-800 dark:text-yellow-300" />
               </div>
               <div>
-                <h3 className="text-xl font-bold text-green-800 dark:text-green-200">100% Solar Powered</h3>
-                <p className="text-sm text-green-600 dark:text-green-400">Clean energy independence</p>
+                <h3 className="text-xl font-bold text-green-900 dark:text-green-200">100% Solar Powered</h3>
+                <p className="text-sm text-green-800 dark:text-green-300">Clean energy independence</p>
               </div>
             </div>
             <p className="text-gray-700 dark:text-gray-300 mb-4">
               Every Smart Node operates entirely on solar power with battery backup, ensuring 24/7 operation during grid outages while reducing carbon footprint by 500 tons annually.
             </p>
             <div className="flex items-center justify-between">
-              <span className="text-sm font-medium text-green-700 dark:text-green-300">Zero grid dependency</span>
-              <Link href="/privacy#solar-efficiency" className="text-blue-600 hover:text-blue-700 text-sm font-medium">
+              <span className="text-sm font-medium text-green-800 dark:text-green-300">Zero grid dependency</span>
+              <Link href="/privacy#solar-efficiency" className="text-blue-800 hover:text-blue-900 text-sm font-medium underline">
                 Learn more →
               </Link>
             </div>
@@ -82,16 +82,16 @@ export default function Home() {
                 <Lock className="h-6 w-6 text-purple-600 dark:text-purple-400" />
               </div>
               <div>
-                <h3 className="text-xl font-bold text-blue-800 dark:text-blue-200">Zero Personal Data</h3>
-                <p className="text-sm text-blue-600 dark:text-blue-400">Privacy by engineering</p>
+                <h3 className="text-xl font-bold text-blue-900 dark:text-blue-200">Zero Personal Data</h3>
+                <p className="text-sm text-blue-800 dark:text-blue-300">Privacy by engineering</p>
               </div>
             </div>
-            <p className="text-gray-700 dark:text-gray-300 mb-4">
+            <p className="text-slate-700 dark:text-slate-300 mb-4">
               We never collect, store, or process personal information. All data is anonymized at the edge with AES-256 encryption, making privacy our foundation, not a feature.
             </p>
             <div className="flex items-center justify-between">
-              <span className="text-sm font-medium text-blue-700 dark:text-blue-300">0 breaches in 5+ years</span>
-              <Link href="/privacy" className="text-blue-600 hover:text-blue-700 text-sm font-medium">
+              <span className="text-sm font-medium text-blue-900 dark:text-blue-300">0 breaches in 5+ years</span>
+              <Link href="/privacy" className="text-blue-800 hover:text-blue-900 text-sm font-medium underline">
                 Privacy details →
               </Link>
             </div>
@@ -105,7 +105,7 @@ export default function Home() {
               <CardHeader>
                 <div className="flex items-center space-x-3">
                   <div className="size-12 rounded-lg bg-green-100 dark:bg-green-900 group-hover:bg-green-200 dark:group-hover:bg-green-800 transition-colors flex items-center justify-center">
-                    <Shield className="h-6 w-6 text-green-600 dark:text-green-400" />
+                    <Shield className="h-6 w-6 text-green-800 dark:text-green-400" />
                   </div>
                   <div>
                     <h3 className="text-xl font-bold">City Leaders</h3>
@@ -118,10 +118,10 @@ export default function Home() {
                   Deploy privacy-first smart nodes with zero taxpayer cost. Generate revenue while providing public safety, free Wi-Fi, and environmental monitoring—without compromising resident privacy.
                 </p>
                 <div className="flex items-center space-x-2 mb-4">
-                  <Shield className="h-4 w-4 text-green-600" />
-                  <span className="text-sm text-green-600 font-medium">Zero personal data collected</span>
+                  <Shield className="h-4 w-4 text-green-800" />
+                  <span className="text-sm text-green-800 font-medium">Zero personal data collected</span>
                 </div>
-                <Button variant="outline" className="w-full group-hover:bg-green-600 group-hover:text-white">
+                <Button variant="outline" className="w-full group-hover:bg-green-800 group-hover:text-white">
                   Explore City Solutions
                 </Button>
               </CardContent>
@@ -146,8 +146,8 @@ export default function Home() {
                   Host solar-powered Smart Nodes with zero installation cost. Earn revenue share while getting backup power, 5G connectivity, and edge computing—all with zero personal data processing.
                 </p>
                 <div className="flex items-center space-x-2 mb-4">
-                  <Sun className="h-4 w-4 text-yellow-600" />
-                  <span className="text-sm text-yellow-600 font-medium">Solar-powered with battery backup</span>
+                  <Sun className="h-4 w-4 text-yellow-800" />
+                  <span className="text-sm text-yellow-800 font-medium">Solar-powered with battery backup</span>
                 </div>
                 <Button variant="outline" className="w-full group-hover:bg-blue-600 group-hover:text-white">
                   Apply to Host Nodes
@@ -182,7 +182,7 @@ export default function Home() {
         </div>
 
         <div className="flex flex-col gap-4 sm:flex-row sm:justify-center">
-          <Button size="lg" className="bg-green-600 hover:bg-green-700">
+          <Button size="lg" className="bg-green-800 hover:bg-green-900 text-white">
             <ArrowRight className="h-4 w-4 mr-2" />
             Join the Pilot Program
           </Button>
@@ -202,7 +202,7 @@ export default function Home() {
         <div className="grid md:grid-cols-3 gap-8 mt-12">
           <div className="text-center">
             <div className="size-20 rounded-full bg-green-100 dark:bg-green-900 flex items-center justify-center mx-auto mb-4">
-              <MapPin className="h-10 w-10 text-green-600 dark:text-green-400" />
+              <MapPin className="h-10 w-10 text-green-800 dark:text-green-400" />
             </div>
             <h3 className="text-xl font-bold mb-2">1. Deploy Nodes</h3>
             <p className="text-muted-foreground">
@@ -323,7 +323,7 @@ export default function Home() {
                 <p className="text-muted-foreground mb-4">
                   Hardened urban edge nodes co-located within city grids for public continuity. Resilient compute capacity at street level.
                 </p>
-                <Button variant="outline" className="w-full group-hover:bg-green-700 group-hover:text-white">
+                <Button variant="outline" className="w-full group-hover:bg-green-800 group-hover:text-white">
                   Discover City Safe Nodes
                 </Button>
               </CardContent>
@@ -340,32 +340,32 @@ export default function Home() {
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {[
             {
-              icon: <Shield className="h-8 w-8 text-slate-600" />,
+              icon: <Shield className="h-8 w-8 text-slate-800" />,
               title: "Maximum Resilience",
               description: "Infrastructure engineered to withstand civilization-level disruptions and maintain operations under any conditions."
             },
             {
-              icon: <Zap className="h-8 w-8 text-gray-600" />,
+              icon: <Zap className="h-8 w-8 text-gray-800" />,
               title: "Rapid Deployment",
               description: "From contract to operational in 90 days or less, significantly faster than traditional construction methods."
             },
             {
-              icon: <Globe className="h-8 w-8 text-green-600" />,
+              icon: <Globe className="h-8 w-8 text-green-800" />,
               title: "Global Coverage",
               description: "Deploy capacity anywhere from urban centers to remote locations where traditional data centers cannot reach."
             },
             {
-              icon: <Users className="h-8 w-8 text-blue-600" />,
+              icon: <Users className="h-8 w-8 text-blue-800" />,
               title: "Expert Partnership",
               description: "End-to-end managed services with 24/7 support from infrastructure specialists with decades of experience."
             },
             {
-              icon: <Box className="h-8 w-8 text-purple-600" />,
+              icon: <Box className="h-8 w-8 text-purple-800" />,
               title: "Flexible Scaling",
               description: "Service-based economics with predictable monthly costs and no upfront capital expenditure."
             },
             {
-              icon: <Building2 className="h-8 w-8 text-red-600" />,
+              icon: <Building2 className="h-8 w-8 text-red-800" />,
               title: "Future-Ready",
               description: "Infrastructure designed for tomorrow's requirements including AI/ML workloads and smart city integration."
             }
@@ -418,7 +418,7 @@ export default function Home() {
             }
           ].map((useCase, index) => (
             <Card key={index} className="p-6">
-              <h4 className="font-semibold mb-2">{useCase.title}</h4>
+              <h3 className="font-semibold mb-2">{useCase.title}</h3>
               <p className="text-sm text-muted-foreground">{useCase.description}</p>
             </Card>
           ))}
@@ -439,7 +439,7 @@ export default function Home() {
                   <span className="text-white text-sm font-bold">1</span>
                 </div>
                 <div className="flex-1">
-                  <h4 className="text-lg font-bold">Underground Foundation</h4>
+                  <h3 className="text-lg font-bold">Underground Foundation</h3>
                   <p className="text-muted-foreground mt-1">
                     Sovereign-grade backbone providing maximum security and resilience for core infrastructure and mission-critical applications.
                   </p>
@@ -451,7 +451,7 @@ export default function Home() {
                   <span className="text-white text-sm font-bold">2</span>
                 </div>
                 <div className="flex-1">
-                  <h4 className="text-lg font-bold">Micro DCaaS Layer</h4>
+                  <h3 className="text-lg font-bold">Micro DCaaS Layer</h3>
                   <p className="text-muted-foreground mt-1">
                     Modular distributed compute nodes providing rapid deployment and flexible capacity where traditional data centers can't reach.
                   </p>
@@ -463,7 +463,7 @@ export default function Home() {
                   <span className="text-white text-sm font-bold">3</span>
                 </div>
                 <div className="flex-1">
-                  <h4 className="text-lg font-bold">City Safe Edge</h4>
+                  <h3 className="text-lg font-bold">City Safe Edge</h3>
                   <p className="text-muted-foreground mt-1">
                     Urban resilience nodes ensuring continuous operations for smart cities, municipal services, and edge computing applications.
                   </p>
@@ -516,6 +516,6 @@ export default function Home() {
           </div>
         </Card>
       </Section>
-    </div>
+    </>
   );
 }

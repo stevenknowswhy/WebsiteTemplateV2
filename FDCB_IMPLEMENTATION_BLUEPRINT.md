@@ -260,7 +260,7 @@ export default function HomePage() {
     <>
       {/* Hero */}
       <section className="border-b keyline">
-        <div className="container-wide py-24 md:py-28">
+        <div className="implementation-container py-24 md:py-28">
           <div className="grid md:grid-cols-12 gap-10 items-center">
             <div className="md:col-span-6">
               <p className="uppercase text-sm tracking-widest text-muted">Sovereign Infrastructure</p>
@@ -426,7 +426,7 @@ import Nav from "./Nav";
 export default function Header(){
   return (
     <header className="border-b keyline bg-white/70 backdrop-blur">
-      <div className="container-wide h-16 flex items-center justify-between">
+      <div className="implementation-container h-16 flex items-center justify-between">
         <a href="/" className="font-medium tracking-tight">Forhemit Data Center Builders</a>
         <Nav />
       </div>
@@ -488,7 +488,7 @@ export default function Section({
 }) {
   return (
     <section className="py-16 border-b keyline">
-      <div className="container-wide">
+      <div className="implementation-container">
         {kicker && (
           <p className="uppercase tracking-widest text-sm text-muted">
             {kicker}

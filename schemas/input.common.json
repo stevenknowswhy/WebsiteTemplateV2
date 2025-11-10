@@ -1,0 +1,23 @@
+{
+  "type": "object",
+  "required": ["file_paths", "rules", "limits"],
+  "properties": {
+    "file_paths": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "rules": {
+      "type": "object",
+      "properties": {
+        "cliches": { "type": "array", "items": { "type": "string" } },
+        "fingerprints": { "type": "string" }
+      }
+    },
+    "limits": {
+      "type": "object",
+      "properties": {
+        "max_file_bytes": { "type": "integer" }
+      }
+    }
+  }
+}

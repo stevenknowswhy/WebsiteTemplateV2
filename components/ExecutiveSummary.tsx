@@ -50,7 +50,7 @@ const executiveSummaryData = [
     technologies: [
       {
         name: "Solar-Powered Smart Hub",
-        description: "Modular unit with photovoltaic panels (95% uptime in variable weather, validated in Seattle trials), battery storage for off-grid resilience, environmental sensors (air quality, noise), and robust 5G/Wi-Fi for seamless connectivity.",
+        description: "Modular unit with photovoltaic panels (95% uptime in variable weather, validated in Seattle trials), battery storage for off-grid resilience, environmental sensors (air quality, noise), and robust 5G/Wi-Fi with automatic failover connectivity.",
         icon: <Sun className="h-5 w-5" />
       },
       {

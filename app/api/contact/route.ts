@@ -44,7 +44,7 @@ export const POST = withApiHandler(async (req) => {
   // Example email sending logic (commented out - would require email service setup)
   /*
   const emailContent = `
-    New contact form submission from TemplateAppV2
+    New contact form submission from Forhem
 
     Name: ${name}
     Email: ${email}
@@ -71,7 +71,7 @@ export const POST = withApiHandler(async (req) => {
   await sendEmail({
     to: email,
     from: 'noreply@' + site.domain,
-    subject: `Thank you for contacting TemplateAppV2`,
+    subject: `Thank you for contacting Forhem`,
     text: `
       Hi ${name},
 
@@ -81,7 +81,7 @@ export const POST = withApiHandler(async (req) => {
       ${message}
 
       Best regards,
-      The TemplateAppV2 Team
+      The Forhem Team
     `,
   });
   */
